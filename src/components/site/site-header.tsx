@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { navLinks } from "./nav-links";
 
 function isActive(pathname: string, href: string) {
@@ -12,11 +12,16 @@ function isActive(pathname: string, href: string) {
 export function SiteHeader({ name }: { name: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!open) return;
+    menuRef.current?.querySelector("a")?.focus();
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      toggleRef.current?.focus();
     };
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
@@ -65,6 +70,7 @@ export function SiteHeader({ name }: { name: string }) {
           </nav>
 
           <button
+            ref={toggleRef}
             type="button"
             className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-paper md:hidden"
             aria-expanded={open}
@@ -82,6 +88,7 @@ export function SiteHeader({ name }: { name: string }) {
       {/* Outside <header>: its backdrop-filter would trap a fixed child inside the 64px bar */}
       {open && (
         <nav
+          ref={menuRef}
           id="mobile-menu"
           aria-label="Main"
           className="no-print fixed inset-x-0 top-16 bottom-0 z-40 flex flex-col justify-between overflow-y-auto bg-ink px-5 pt-6 pb-10 sm:px-8 md:hidden"

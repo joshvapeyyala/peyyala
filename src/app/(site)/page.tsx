@@ -19,7 +19,7 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-5 pt-10 pb-12 sm:px-8 sm:pt-14 lg:px-10 lg:pt-16">
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold uppercase tracking-[0.14em] text-soft">
           <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
+            <span className="h-2 w-2 rounded-full bg-live" aria-hidden="true" />
             {profile.openToWorkLabel}
           </span>
           <span className="text-muted">·</span>
@@ -30,9 +30,9 @@ export default async function HomePage() {
           I build{" "}
           <span
             aria-hidden="true"
-            className="relative inline-flex h-[0.72em] w-[1.45em] translate-y-[-0.06em] items-center justify-center overflow-hidden rounded-full border-2 border-accent bg-ink-2 align-middle"
+            className="relative inline-flex h-[0.72em] w-[1.45em] translate-y-[-0.06em] items-center justify-center overflow-hidden rounded-full border-2 border-edge bg-ink-2 align-middle"
           >
-            <span className="text-[0.3em] tracking-[0.04em] text-accent">JP</span>
+            <span className="text-[0.3em] tracking-[0.04em] text-soft">JP</span>
           </span>
           <br />
           <span className="text-outline">backends</span>
@@ -103,7 +103,7 @@ export default async function HomePage() {
             ))}
             <Link
               href="/resume"
-              className="mt-6 self-start text-sm font-bold uppercase tracking-[0.1em] text-accent hover:underline"
+              className="mt-6 self-start text-sm font-bold uppercase tracking-[0.1em] text-soft transition-colors hover:text-paper"
             >
               Full resume →
             </Link>

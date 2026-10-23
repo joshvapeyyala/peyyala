@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { ButtonLink } from "@/components/site/button-link";
 import { ProjectShot } from "@/components/site/project-shot";
 import { SectionLabel } from "@/components/site/section-label";
+import { statusMeta } from "@/components/site/status-badge";
 import { getProject, getProjects } from "@/lib/content";
 
 export async function generateStaticParams() {
@@ -54,14 +55,14 @@ async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
 
   const facts = [
     { label: "Role", value: project.role },
-    { label: "Status", value: "Live in production" },
+    { label: "Status", value: statusMeta[project.status].detail },
     { label: "Website", value: project.urlLabel },
   ];
 
   return (
     <>
       <p className="mt-10 flex items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.14em] text-soft">
-        <span className="font-display text-lg tracking-normal text-accent">
+        <span className="font-display text-lg tracking-normal text-muted">
           {String(index + 1).padStart(2, "0")}
         </span>
         {project.category}
@@ -119,7 +120,7 @@ async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
           <ol className="mt-5 flex flex-col">
             {project.highlights.map((point, i) => (
               <li key={point} className="flex gap-5 border-t border-line py-6 last:border-b">
-                <span className="font-display text-2xl text-accent">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-display text-2xl text-muted">{String(i + 1).padStart(2, "0")}</span>
                 <p className="text-lg leading-relaxed text-soft">{point}</p>
               </li>
             ))}

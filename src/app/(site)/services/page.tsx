@@ -15,21 +15,19 @@ export default async function ServicesPage() {
   return (
     <div className="mx-auto max-w-7xl px-5 pt-12 pb-20 sm:px-8 lg:px-10 lg:pt-16">
       <SectionLabel>Freelance · Services</SectionLabel>
-      <h1 className="mt-4 font-display text-[clamp(3.6rem,12vw,10rem)] uppercase leading-[0.88]">
-        Need it <span className="text-outline">built?</span>
-        <br />
-        I&apos;ll <span className="text-accent">ship</span> it.
+      <h1 className="mt-6 max-w-5xl text-[clamp(2.25rem,5vw,4.25rem)] font-semibold leading-[1.05] tracking-[-0.02em]">
+        Web apps, backends and first versions for{" "}
+        <span className="text-accent">small businesses and founders.</span>
       </h1>
       <p className="mt-8 max-w-2xl text-lg leading-relaxed text-soft">
-        Web apps, backends and first versions for small businesses and founders.
-        The same way I built CareDeck, Xpensefy and Lineage: end to end, live in
+        Built the same way as CareDeck, Xpensefy and Lineage: end to end, live in
         production.
       </p>
 
       <ul className="mt-16 grid gap-5 lg:grid-cols-3">
         {services.map((service, index) => (
           <li key={service.title} className="flex flex-col gap-4 rounded-3xl border border-line bg-ink-2 p-6 sm:p-7">
-            <span className="font-display text-xl text-accent">{String(index + 1).padStart(2, "0")}</span>
+            <span className="font-display text-xl text-muted">{String(index + 1).padStart(2, "0")}</span>
             <h2 className="font-display text-4xl uppercase leading-none">{service.title}</h2>
             <p className="leading-relaxed text-soft">{service.description}</p>
             <ul className="mt-auto flex flex-col gap-2 border-t border-line pt-4 text-sm text-muted">
@@ -46,7 +44,7 @@ export default async function ServicesPage() {
         <ol className="mt-6 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {process.map((item) => (
             <li key={item.step} className="flex flex-col gap-2 bg-ink p-6 sm:p-7">
-              <span className="font-display text-5xl text-accent">{item.step}</span>
+              <span className="font-display text-5xl text-muted">{item.step}</span>
               <h3 className="font-display text-3xl uppercase">{item.title}</h3>
               <p className="text-soft">{item.text}</p>
             </li>

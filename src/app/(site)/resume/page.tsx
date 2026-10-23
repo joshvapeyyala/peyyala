@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PrintButton } from "@/components/site/print-button";
+import { statusMeta } from "@/components/site/status-badge";
 import { getEducation, getExperience, getProfile, getProjects, getSkills } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 function Heading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="border-b border-line pb-3 text-[12px] font-bold uppercase tracking-[0.16em] text-accent print:text-[11px]">
+    <h2 className="border-b border-line pb-3 text-[12px] font-bold uppercase tracking-[0.16em] text-paper print:text-[11px]">
       {children}
     </h2>
   );
@@ -80,7 +81,7 @@ export default async function ResumePage() {
                       {role.start} – {role.end}
                     </p>
                   </div>
-                  <ul className="mt-3 flex list-disc flex-col gap-2 pl-5 text-soft marker:text-accent">
+                  <ul className="mt-3 flex list-disc flex-col gap-2 pl-5 text-soft marker:text-muted">
                     {role.points.map((point) => (
                       <li key={point} className="leading-relaxed">{point}</li>
                     ))}
@@ -100,7 +101,7 @@ export default async function ResumePage() {
                   <Link href={`/work/${project.slug}`} className="hover:text-accent">
                     {project.name}
                   </Link>{" "}
-                  <span className="font-normal text-muted">— {project.category} (Live)</span>
+                  <span className="font-normal text-muted">— {project.category} ({statusMeta[project.status].label})</span>
                 </h3>
                 <a href={project.url} className="text-sm text-soft hover:text-paper">
                   {project.urlLabel}
@@ -109,7 +110,7 @@ export default async function ResumePage() {
               <p className="mt-1 text-sm italic text-muted">
                 {project.role} · {project.stack.join(", ")}
               </p>
-              <ul className="mt-3 flex list-disc flex-col gap-2 pl-5 text-soft marker:text-accent">
+              <ul className="mt-3 flex list-disc flex-col gap-2 pl-5 text-soft marker:text-muted">
                 {project.highlights.map((point) => (
                   <li key={point} className="leading-relaxed">{point}</li>
                 ))}

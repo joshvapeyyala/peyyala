@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import type { Project } from "@/content/types";
 import { ProjectShot } from "./project-shot";
+import { StatusBadge } from "./status-badge";
 
 type Props = {
   projects: Project[];
@@ -62,7 +63,10 @@ export function DepartureBoard({ projects, boardingLabel }: Props) {
                   </span>
                   <span className="text-sm text-soft lg:hidden">
                     {project.category}
-                    <span className="font-semibold text-live md:hidden"> · ● Live</span>
+                    <span className="md:hidden">
+                      {" · "}
+                      <StatusBadge status={project.status} />
+                    </span>
                   </span>
                 </span>
                 <span className="hidden text-sm leading-relaxed text-soft lg:block">
@@ -70,9 +74,7 @@ export function DepartureBoard({ projects, boardingLabel }: Props) {
                   <br />
                   <span className="text-muted">{project.stack.slice(0, 3).join(" · ")}</span>
                 </span>
-                <span className="hidden text-right text-sm font-bold uppercase tracking-[0.08em] text-live md:block">
-                  ● Live
-                </span>
+                <StatusBadge status={project.status} className="hidden text-right text-sm md:block" />
               </Link>
             </li>
           );
@@ -131,7 +133,7 @@ export function DepartureBoard({ projects, boardingLabel }: Props) {
                   </span>
                 ))}
               </span>
-              <span className="text-xs font-bold uppercase tracking-[0.1em] text-accent">
+              <span className="text-xs font-bold uppercase tracking-[0.1em] text-soft">
                 View case study →
               </span>
             </div>

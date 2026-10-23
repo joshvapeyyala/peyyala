@@ -3,7 +3,7 @@ import type { ComponentProps } from "react";
 
 const styles = {
   primary: "bg-accent text-ink hover:brightness-110",
-  outline: "border border-[#57534e] text-paper hover:border-paper",
+  outline: "border border-edge text-paper hover:border-paper",
 };
 
 type Props = ComponentProps<typeof Link> & { variant?: keyof typeof styles };

@@ -7,6 +7,7 @@
   --muted: #a8a29e;
   --soft: #d6d3d1;
   --line: #292524;
+  --edge: #57534e;
   --accent: #ff5533;
   --live: #4ade80;
 }
@@ -18,6 +19,7 @@
   --color-muted: var(--muted);
   --color-soft: var(--soft);
   --color-line: var(--line);
+  --color-edge: var(--edge);
   --color-accent: var(--accent);
   --color-live: var(--live);
   --font-sans: var(--font-inter);
