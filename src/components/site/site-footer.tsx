@@ -1,5 +1,13 @@
+import { cacheLife } from "next/cache";
 import type { Profile } from "@/content/types";
 import { FooterCta } from "./footer-cta";
+
+// Cached so the footer stays in the static shell; refreshes daily to roll over the year
+async function CurrentYear() {
+  "use cache";
+  cacheLife("days");
+  return new Date().getFullYear();
+}
 
 export function SiteFooter({ profile }: { profile: Profile }) {
   return (
@@ -28,7 +36,7 @@ export function SiteFooter({ profile }: { profile: Profile }) {
             </li>
           </ul>
         </div>
-        <p className="mt-10 text-xs text-muted">© 2026 {profile.name} · peyyala.com</p>
+        <p className="mt-10 text-xs text-muted">© <CurrentYear /> {profile.name} · peyyala.com</p>
       </div>
     </footer>
   );

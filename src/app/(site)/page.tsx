@@ -69,7 +69,9 @@ export default async function HomePage() {
               Shipped &amp; live
             </h2>
           </div>
-          <p className="hidden text-sm text-muted lg:block">Hover a row to preview</p>
+          <p className="hidden text-sm text-muted lg:pointer-fine:block" aria-hidden="true">
+            Hover a row to preview
+          </p>
         </div>
         <DepartureBoard projects={projects} boardingLabel="Full-time role" />
       </section>

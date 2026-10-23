@@ -59,6 +59,15 @@ async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
     { label: "Website", value: project.urlLabel },
   ];
 
+  const story = project.caseStudy ?? {};
+  const sections = [
+    { title: "The problem", paragraphs: story.problem },
+    { title: "Approach", paragraphs: story.approach },
+    { title: "Architecture", paragraphs: story.architecture },
+    { title: "Outcome", paragraphs: story.outcome },
+  ].filter((section) => section.paragraphs?.length);
+  const metrics = story.metrics ?? [];
+
   return (
     <>
       <p className="mt-10 flex items-center gap-3 text-[12px] font-semibold uppercase tracking-[0.14em] text-soft">
@@ -103,6 +112,38 @@ async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
           </div>
         ))}
       </dl>
+
+      {metrics.length > 0 && (
+        <dl className="mt-20 grid grid-cols-2 gap-x-6 gap-y-10 border-y border-line py-10 lg:grid-cols-4">
+          {metrics.map((metric) => (
+            <div key={metric.label}>
+              <dd className="font-display text-[clamp(2.75rem,6vw,4.5rem)] uppercase leading-none">{metric.value}</dd>
+              <dt className="mt-3 text-sm text-soft">{metric.label}</dt>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      {sections.length > 0 && (
+        <div className="mt-20 flex flex-col">
+          {sections.map((section, i) => (
+            <section
+              key={section.title}
+              className="grid gap-4 border-t border-line py-10 last:border-b lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-20"
+            >
+              <h2 className="flex items-baseline gap-4 font-display text-3xl uppercase sm:text-4xl">
+                <span className="text-xl text-muted">{String(i + 1).padStart(2, "0")}</span>
+                {section.title}
+              </h2>
+              <div className="flex max-w-3xl flex-col gap-4 text-lg leading-relaxed text-soft">
+                {section.paragraphs?.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
 
       <div className="mt-20 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-20">
         <div>

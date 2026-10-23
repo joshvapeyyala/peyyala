@@ -26,6 +26,15 @@ export type Screenshot = {
   alt: string;
 };
 
+// Long-form case study. Every field is optional: a section only renders once it has text.
+export type CaseStudy = {
+  metrics?: { label: string; value: string }[];
+  problem?: string[];
+  approach?: string[];
+  architecture?: string[];
+  outcome?: string[];
+};
+
 export type Project = {
   slug: string;
   name: string;
@@ -38,6 +47,7 @@ export type Project = {
   stack: string[];
   highlights: string[];
   screenshot?: Screenshot;
+  caseStudy?: CaseStudy;
 };
 
 export type Role = {
