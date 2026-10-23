@@ -15,6 +15,13 @@
       "when": 1792789170149,
       "tag": "0001_auth",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792794816111,
+      "tag": "0002_contact_rate_limit",
+      "breakpoints": true
     }
   ]
 }

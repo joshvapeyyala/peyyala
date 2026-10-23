@@ -7,6 +7,7 @@ import { SchemeToggle } from "./scheme-toggle";
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: "M3 12l9-9 9 9M5 10v10h14V10" },
+  { href: "/admin/inbox", label: "Inbox", icon: "M4 6h16v12H4zM4 7l8 6 8-6" },
   { href: "/admin/appearance", label: "Appearance", icon: "M12 3a9 9 0 100 18c1 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.8.7-1.5 1.5-1.5H16a5 5 0 005-5c0-4.4-4-7.8-9-7.8zM7.5 12a1 1 0 100-2 1 1 0 000 2zm3-4a1 1 0 100-2 1 1 0 000 2zm4 0a1 1 0 100-2 1 1 0 000 2z" },
   { href: "/admin/projects", label: "Projects", icon: "M3 7h18M3 7v12h18V7M3 7l2-3h14l2 3M9 12h6" },
   { href: "/admin/profile", label: "Profile & resume", icon: "M12 12a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0" },

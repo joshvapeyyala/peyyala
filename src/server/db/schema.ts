@@ -215,14 +215,21 @@ export const authVerifications = pgTable(
 
 export const messageTopic = pgEnum("message_topic", ["job", "project", "other"]);
 
-export const messages = pgTable("messages", {
-  id: id(),
-  topic: messageTopic().notNull(),
-  name: text().notNull(),
-  email: text().notNull(),
-  company: text(),
-  message: text().notNull(),
-  createdAt: timestamps.createdAt,
-  // Null until opened in the Inbox
-  readAt: timestamp({ withTimezone: true }),
-});
+export const messages = pgTable(
+  "messages",
+  {
+    id: id(),
+    topic: messageTopic().notNull(),
+    name: text().notNull(),
+    email: text().notNull(),
+    company: text(),
+    message: text().notNull(),
+    createdAt: timestamps.createdAt,
+    // Null until marked read in the Inbox
+    readAt: timestamp({ withTimezone: true }),
+    // Who sent it, as a one-way hash of their IP address (never the address
+    // itself), so the contact form can limit how often one visitor sends
+    senderHash: text(),
+  },
+  (table) => [index("messages_sender_created_idx").on(table.senderHash, table.createdAt)],
+);

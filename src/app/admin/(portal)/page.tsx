@@ -1,17 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { PageHeader } from "@/components/admin/page-header";
 import { statusOptions } from "@/components/admin/options";
 import { Badge, ButtonLink, Card, buttonBase, buttonStyles, sectionId } from "@/components/admin/ui";
 import { designs } from "@/content/themes";
 import { cacheLife, cacheTag } from "next/cache";
 import { contentTags, getProfile, getProjects, getServices, getTheme } from "@/lib/content";
+import { getUnreadCount } from "@/server/inbox";
 import { fileExists } from "@/server/storage";
 
 // absolute: the layout's "%s — Admin" template only applies to child segments
 export const metadata: Metadata = { title: { absolute: "Dashboard — Admin" } };
 
 type Check = { done: boolean; text: string; href: string };
+
+async function InboxCard() {
+  const unread = await getUnreadCount();
+  return (
+    <Link href="/admin/inbox" className="group rounded-xl">
+      <Card className={`h-full p-5 transition-colors group-hover:border-border-strong ${unread ? "border-primary/50" : ""}`}>
+        <p className="text-sm text-muted">Inbox</p>
+        <p className="mt-2 text-2xl font-semibold tracking-tight">{unread}</p>
+        <p className="mt-1 text-sm text-muted">{unread === 1 ? "unread message" : "unread messages"}</p>
+      </Card>
+    </Link>
+  );
+}
 
 // Cached with the profile: the file only changes through the resume upload,
 // which refreshes the profile tag
@@ -73,7 +88,11 @@ export default async function DashboardPage() {
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {/* Messages are read per request, so the count streams in */}
+        <Suspense fallback={<Card className="h-full min-h-28 animate-pulse bg-sunken" />}>
+          <InboxCard />
+        </Suspense>
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href} className="group rounded-xl">
             <Card className="h-full p-5 transition-colors group-hover:border-border-strong">

@@ -8,6 +8,7 @@
 import { z } from "zod";
 import { isThemeSetting } from "@/content/themes";
 import type { ProjectStatus } from "@/content/types";
+import { messageTopics } from "@/lib/message-topics";
 
 // ---- Building blocks ----
 
@@ -115,6 +116,21 @@ export const projectSchema = z.object({
 
 export type ProjectInput = z.output<typeof projectSchema>;
 
+// ---- Contact form (public) ----
+
+export const contactSchema = z
+  .object({
+    topic: z.enum(messageTopics, "Pick what you're reaching out about."),
+    name: required(100, "Please tell me your name."),
+    email: z.string().trim().pipe(z.email("That email address doesn't look right.")),
+    company: text(120),
+    message: required(5000, "Please write a message.").min(10, "A little more detail, please."),
+  })
+  // A job enquiry without a company is hard to act on
+  .refine((value) => value.topic !== "job" || value.company, { path: ["company"], message: "Which company is hiring?" });
+
+export type ContactInput = z.output<typeof contactSchema>;
+
 // ---- Uploads ----
 
 // Screenshots and the resume PDF. next.config's serverActions.bodySizeLimit leaves room above this.
@@ -132,9 +148,14 @@ export function failed(message: string, errors: FieldErrors = {}): SaveResult<ne
 }
 
 // The first problem with each field, for the form to show beside it
-export function invalid(error: z.ZodError): SaveResult<never> {
+export function fieldErrors(error: z.ZodError): FieldErrors {
   const errors: FieldErrors = {};
   for (const issue of error.issues) errors[issue.path.join(".")] ??= issue.message;
+  return errors;
+}
+
+export function invalid(error: z.ZodError): SaveResult<never> {
+  const errors = fieldErrors(error);
   const count = Object.keys(errors).length;
   return failed(`Couldn't save: ${count === 1 ? "1 field needs" : `${count} fields need`} attention.`, errors);
 }
