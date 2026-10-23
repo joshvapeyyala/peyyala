@@ -62,10 +62,10 @@ export function LeaveGuard() {
       </h2>
       <p className="mt-2 text-sm text-muted">Your edits on this page haven&apos;t been saved and will be lost.</p>
       <div className="mt-6 flex justify-end gap-2">
-        <Button data-ignore-dirty autoFocus onClick={() => dialog.current?.close()}>
+        <Button autoFocus onClick={() => dialog.current?.close()}>
           Stay
         </Button>
-        <Button data-ignore-dirty variant="primary" onClick={leave}>
+        <Button variant="primary" onClick={leave}>
           Leave page
         </Button>
       </div>

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { SaveBar } from "./form";
+import { saveTheme } from "@/app/admin/(portal)/appearance/actions";
+import { SaveBar, useEditor } from "./form";
 import { ThemePreview } from "./theme-preview";
-import { Badge, Button, buttonBase, buttonStyles } from "./ui";
+import { Badge, buttonBase, buttonStyles } from "./ui";
 
 export type DesignOption = {
   id: string;
@@ -20,11 +20,8 @@ type Props = {
 };
 
 export function AppearancePicker({ designs, current }: Props) {
-  const [selected, setSelected] = useState(current);
-  const [copied, setCopied] = useState(false);
-  const changed = selected.design !== current.design || selected.palette !== current.palette;
-  // Until saving is connected: the SQL to run by hand (pnpm db:studio has a SQL runner)
-  const setting = `update site_settings set design = '${selected.design}', palette = '${selected.palette}';`;
+  const editor = useEditor(current, saveTheme);
+  const selected = editor.value;
   const pick = designs.find((d) => d.id === selected.design)?.palettes.find((p) => p.id === selected.palette);
 
   // Arrow keys move the selection within a design's palettes, as radios do
@@ -34,14 +31,8 @@ export function AppearancePicker({ designs, current }: Props) {
     event.preventDefault();
     const from = selected.design === design.id ? design.palettes.findIndex((p) => p.id === selected.palette) : 0;
     const next = (from + step + design.palettes.length) % design.palettes.length;
-    setSelected({ design: design.id, palette: design.palettes[next].id });
+    editor.set({ design: design.id, palette: design.palettes[next].id });
     (event.currentTarget.children[next] as HTMLElement).focus();
-  }
-
-  async function copy() {
-    await navigator.clipboard.writeText(setting);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
   }
 
   return (
@@ -64,7 +55,7 @@ export function AppearancePicker({ designs, current }: Props) {
                   aria-checked={isSelected}
                   // One tab stop per group: the selected palette, else the first
                   tabIndex={isSelected || (selected.design !== design.id && index === 0) ? 0 : -1}
-                  onClick={() => setSelected({ design: design.id, palette: palette.id })}
+                  onClick={() => editor.set({ design: design.id, palette: palette.id })}
                   className={`overflow-hidden rounded-xl border bg-panel text-left transition ${
                     isSelected ? "border-primary ring-2 ring-primary/30" : "border-border hover:border-border-strong"
                   }`}
@@ -88,36 +79,22 @@ export function AppearancePicker({ designs, current }: Props) {
       ))}
 
       <SaveBar
-        dirty={changed}
-        onDiscard={() => setSelected(current)}
+        editor={editor}
+        saveLabel="Make it live"
         message={
           pick && (
             <p>
               <span className="font-medium">{pick.label}</span>
-              <span className="text-muted">
-                {" "}
-                selected. Until saving is connected, run the copied SQL in <code className="rounded bg-sunken px-1 py-0.5 text-xs">pnpm db:studio</code>, then
-                restart the server.
-              </span>
+              <span className="text-muted"> selected. Visitors see it as soon as you make it live.</span>
             </p>
           )
         }
         actions={
-          <>
-            {process.env.NODE_ENV === "development" && (
-              <a
-                href={`/?design=${selected.design}&palette=${selected.palette}`}
-                target="_blank"
-                rel="noreferrer"
-                className={`${buttonBase} ${buttonStyles.ghost}`}
-              >
-                Preview site ↗
-              </a>
-            )}
-            <Button onClick={copy} title={setting}>
-              {copied ? "Copied ✓" : "Copy SQL"}
-            </Button>
-          </>
+          process.env.NODE_ENV === "development" && (
+            <a href={`/?design=${selected.design}&palette=${selected.palette}`} target="_blank" rel="noreferrer" className={`${buttonBase} ${buttonStyles.ghost}`}>
+              Preview site ↗
+            </a>
+          )
         }
       />
     </div>

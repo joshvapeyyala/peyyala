@@ -112,7 +112,8 @@ function sortKeys(value: unknown): unknown {
 
 (checkOnly ? Promise.resolve() : seed())
   .then(verify)
-  .then(() => console.log(checkOnly ? "Database matches the seed content." : "Seed complete."))
+  // Seeding skips the admin's cache refresh (updateTag), so a running server keeps showing the old content
+  .then(() => console.log(checkOnly ? "Database matches the seed content." : "Seed complete. Restart a running dev or production server to see it."))
   .catch((error) => {
     console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;

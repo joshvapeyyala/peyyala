@@ -1,24 +1,132 @@
 "use client";
 
-import { useEffect, useId, useState, type ComponentProps } from "react";
+import { unstable_rethrow } from "next/navigation";
+import { useEffect, useEffectEvent, useId, useState, useTransition, type ComponentProps } from "react";
+import type { FieldErrors, SaveResult } from "@/lib/schemas";
 import { LeaveGuard } from "./leave-guard";
 import { Button, sectionId } from "./ui";
 
-// Form controls for the admin. Until the backend exists the forms keep edits in
-// the browser only: everything is editable, nothing is saved.
+// Form controls for the admin. Each screen keeps all its values in one piece
+// of React state (useEditor) and sends it whole to its server action on save.
 
 const control =
-  "w-full rounded-lg border border-border-strong bg-panel px-3 text-sm text-fg placeholder:text-muted/70 transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
+  "w-full rounded-lg border border-border-strong bg-panel px-3 text-sm text-fg placeholder:text-muted/70 transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 aria-[invalid=true]:border-danger aria-[invalid=true]:focus:ring-danger/20";
+
+// ---- Editor state ----
+
+type Failure<T> = { value: T; message: string; errors: FieldErrors };
+
+// The values being edited, whether they differ from what's saved, and saving.
+// `save` is the screen's server action; it returns the cleaned-up values it
+// stored (shown from then on), or the problems to show beside each field.
+export function useEditor<T>(initial: T, save: (value: T) => Promise<SaveResult<T>>) {
+  const [saved, setSaved] = useState(initial);
+  const [value, setValue] = useState(initial);
+  // The last failed save. Its errors stay beside their fields until those are edited.
+  const [failure, setFailure] = useState<Failure<T> | null>(null);
+  const [justSaved, setJustSaved] = useState(false);
+  const [pending, startTransition] = useTransition();
+  const dirty = !isEqual(value, saved);
+
+  // After a failed save, bring the first field with a problem into view. An
+  // effect, because the save's transition draws the errors after it resolves.
+  // Only visible fields: Next.js keeps recently visited pages mounted but hidden.
+  useEffect(() => {
+    if (!failure) return;
+    const fields = document.querySelectorAll<HTMLElement>('[aria-invalid="true"]');
+    [...fields].find((field) => field.checkVisibility())?.focus();
+  }, [failure]);
+
+  useEffect(() => {
+    if (!justSaved) return;
+    const timer = setTimeout(() => setJustSaved(false), 3000);
+    return () => clearTimeout(timer);
+  }, [justSaved]);
+
+  function submit() {
+    if (pending || !dirty) return;
+    const submitted = value;
+    setJustSaved(false);
+    startTransition(async () => {
+      let result: SaveResult<T>;
+      try {
+        result = await save(submitted);
+      } catch (error) {
+        // Redirects (a new project's page, or the login page when signed out) belong to Next.js
+        unstable_rethrow(error);
+        result = { ok: false, message: "Couldn't reach the server. Check your connection and try again.", errors: {} };
+      }
+      if (result.ok) {
+        const stored = result.value ?? submitted;
+        setSaved(stored);
+        // Keep anything typed while the save was on its way
+        setValue((current) => (current === submitted ? stored : current));
+        setFailure(null);
+        setJustSaved(true);
+      } else {
+        setFailure({ value: submitted, ...result });
+      }
+    });
+  }
+
+  // The error for one field, e.g. errorAt("experience.0.company")
+  function errorAt(path: string) {
+    const message = failure?.errors[path];
+    return message && isEqual(pick(value, path), pick(failure.value, path)) ? message : undefined;
+  }
+
+  // The first error for a field or anything inside it, e.g. one bad tag in a list
+  function errorWithin(path: string) {
+    const nested = Object.keys(failure?.errors ?? {}).filter((key) => key === path || key.startsWith(`${path}.`));
+    return nested.map(errorAt).find(Boolean);
+  }
+
+  return {
+    value,
+    set: setValue,
+    update: (patch: Partial<T>) => setValue((current) => ({ ...current, ...patch })),
+    dirty,
+    pending,
+    justSaved: justSaved && !dirty,
+    message: failure?.message,
+    submit,
+    discard() {
+      setValue(saved);
+      setFailure(null);
+    },
+    errorAt,
+    errorWithin,
+  };
+}
+
+export type Editor<T> = ReturnType<typeof useEditor<T>>;
+
+// Plain data only: objects, arrays, strings, numbers, booleans
+function isEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  return keysA.length === keysB.length && keysA.every((key) => isEqual((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]));
+}
+
+function pick(value: unknown, path: string): unknown {
+  return path.split(".").reduce<unknown>((node, key) => (node && typeof node === "object" ? (node as Record<string, unknown>)[key] : undefined), value);
+}
+
+// ---- Fields ----
 
 type FieldProps = {
   label: string;
   hint?: string;
+  error?: string;
   // Shows "length / recommended" beside the hint, turning amber past it
   count?: { length: number; recommended: number };
-  children: (id: string) => React.ReactNode;
+  children: (control: { id: string; "aria-invalid"?: true; "aria-describedby"?: string }) => React.ReactNode;
 };
 
-export function Field({ label, hint, count, children }: FieldProps) {
+export function Field({ label, hint, error, count, children }: FieldProps) {
   const id = useId();
   const over = count && count.length > count.recommended;
   return (
@@ -26,7 +134,12 @@ export function Field({ label, hint, count, children }: FieldProps) {
       <label htmlFor={id} className="text-sm font-medium">
         {label}
       </label>
-      {children(id)}
+      {children({ id, ...(error && { "aria-invalid": true, "aria-describedby": `${id}-error` }) })}
+      {error && (
+        <p id={`${id}-error`} className="text-xs font-medium text-danger">
+          {error}
+        </p>
+      )}
       {(hint || count) && (
         <div className="flex justify-between gap-3 text-xs text-muted">
           <p>{hint}</p>
@@ -41,51 +154,33 @@ export function Field({ label, hint, count, children }: FieldProps) {
   );
 }
 
-// Tracks the typed length of an uncontrolled field for its counter
-function useCount(defaultValue: unknown, recommended?: number) {
-  const [length, setLength] = useState(String(defaultValue ?? "").length);
-  return {
-    count: recommended ? { length, recommended } : undefined,
-    track: (value: string) => recommended && setLength(value.length),
-  };
-}
+type Controlled<Element extends "input" | "textarea"> = Omit<ComponentProps<Element>, "id" | "value" | "onChange"> & {
+  label: string;
+  hint?: string;
+  error?: string;
+  recommended?: number;
+  value: string;
+  onChange: (value: string) => void;
+};
 
-type TextProps = Omit<ComponentProps<"input">, "id"> & { label: string; hint?: string; recommended?: number };
-
-export function TextField({ label, hint, recommended, className = "", onChange, ...props }: TextProps) {
-  const { count, track } = useCount(props.defaultValue, recommended);
+export function TextField({ label, hint, error, recommended, value, onChange, className = "", ...props }: Controlled<"input">) {
   return (
-    <Field label={label} hint={hint} count={count}>
-      {(id) => (
-        <input
-          id={id}
-          {...props}
-          onChange={(event) => {
-            track(event.target.value);
-            onChange?.(event);
-          }}
-          className={`${control} h-9 ${className}`}
-        />
-      )}
+    <Field label={label} hint={hint} error={error} count={recommended ? { length: value.length, recommended } : undefined}>
+      {(field) => <input {...field} {...props} value={value} onChange={(event) => onChange(event.target.value)} className={`${control} h-9 ${className}`} />}
     </Field>
   );
 }
 
-type AreaProps = Omit<ComponentProps<"textarea">, "id"> & { label: string; hint?: string; recommended?: number };
-
-export function TextAreaField({ label, hint, recommended, rows = 4, className = "", onChange, ...props }: AreaProps) {
-  const { count, track } = useCount(props.defaultValue, recommended);
+export function TextAreaField({ label, hint, error, recommended, value, onChange, rows = 4, className = "", ...props }: Controlled<"textarea">) {
   return (
-    <Field label={label} hint={hint} count={count}>
-      {(id) => (
+    <Field label={label} hint={hint} error={error} count={recommended ? { length: value.length, recommended } : undefined}>
+      {(field) => (
         <textarea
-          id={id}
+          {...field}
           rows={rows}
           {...props}
-          onChange={(event) => {
-            track(event.target.value);
-            onChange?.(event);
-          }}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
           className={`${control} resize-y py-2 leading-relaxed ${className}`}
         />
       )}
@@ -93,13 +188,31 @@ export function TextAreaField({ label, hint, recommended, rows = 4, className = 
   );
 }
 
-type SelectProps = Omit<ComponentProps<"select">, "id"> & { label: string; hint?: string; options: { value: string; label: string }[] };
+// A list of lines or paragraphs edited as one text box. Splitting and joining
+// round-trip exactly, so typing is never disturbed; blank entries are dropped
+// when saved.
+export function LinesField({ value, onChange, separator, ...props }: Omit<Controlled<"textarea">, "value" | "onChange"> & {
+  value: string[];
+  onChange: (value: string[]) => void;
+  separator: "\n" | "\n\n";
+}) {
+  return <TextAreaField {...props} value={value.join(separator)} onChange={(text) => onChange(text.split(separator))} />;
+}
 
-export function SelectField({ label, hint, options, className = "", ...props }: SelectProps) {
+type SelectProps = Omit<ComponentProps<"select">, "id" | "value" | "onChange"> & {
+  label: string;
+  hint?: string;
+  error?: string;
+  options: readonly { value: string; label: string }[];
+  value: string;
+  onChange: (value: string) => void;
+};
+
+export function SelectField({ label, hint, error, options, value, onChange, className = "", ...props }: SelectProps) {
   return (
-    <Field label={label} hint={hint}>
-      {(id) => (
-        <select id={id} {...props} className={`${control} h-9 ${className}`}>
+    <Field label={label} hint={hint} error={error}>
+      {(field) => (
+        <select {...field} {...props} value={value} onChange={(event) => onChange(event.target.value)} className={`${control} h-9 ${className}`}>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -111,11 +224,11 @@ export function SelectField({ label, hint, options, className = "", ...props }: 
   );
 }
 
-export function Toggle({ label, hint, defaultChecked }: { label: string; hint?: string; defaultChecked?: boolean }) {
+export function Toggle({ label, hint, checked, onChange }: { label: string; hint?: string; checked: boolean; onChange: (checked: boolean) => void }) {
   const id = useId();
   return (
     <div className="flex items-start gap-3">
-      <input id={id} type="checkbox" defaultChecked={defaultChecked} className="peer sr-only" />
+      <input id={id} type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} className="peer sr-only" />
       <label
         htmlFor={id}
         className="relative mt-0.5 h-5 w-9 shrink-0 cursor-pointer rounded-full bg-border-strong transition peer-checked:bg-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary/40 after:absolute after:top-0.5 after:left-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition peer-checked:after:translate-x-4"
@@ -133,27 +246,26 @@ export function Toggle({ label, hint, defaultChecked }: { label: string; hint?: 
 }
 
 // A list of short values (stack, examples, skills) edited as removable chips
-export function TagField({ label, hint, initial }: { label: string; hint?: string; initial: string[] }) {
-  const [tags, setTags] = useState(initial);
+export function TagField({ label, hint, error, value, onChange }: { label: string; hint?: string; error?: string; value: string[]; onChange: (value: string[]) => void }) {
   const [draft, setDraft] = useState("");
 
   function add() {
-    const value = draft.trim();
-    if (value && !tags.includes(value)) setTags([...tags, value]);
+    const tag = draft.trim();
+    if (tag && !value.includes(tag)) onChange([...value, tag]);
     setDraft("");
   }
 
   return (
-    <Field label={label} hint={hint ?? "Press Enter to add."}>
-      {(id) => (
-        <div className={`${control} flex min-h-9 flex-wrap items-center gap-1.5 py-1.5`}>
-          {tags.map((tag) => (
+    <Field label={label} hint={hint ?? "Press Enter to add."} error={error}>
+      {(field) => (
+        <div className={`${control} flex min-h-9 flex-wrap items-center gap-1.5 py-1.5 has-[[aria-invalid=true]]:border-danger`}>
+          {value.map((tag) => (
             <span key={tag} className="inline-flex items-center gap-1 rounded-md bg-sunken py-0.5 pr-1 pl-2 text-xs">
               {tag}
               <button
                 type="button"
                 aria-label={`Remove ${tag}`}
-                onClick={() => setTags(tags.filter((item) => item !== tag))}
+                onClick={() => onChange(value.filter((item) => item !== tag))}
                 className="grid h-4 w-4 place-items-center rounded text-muted hover:bg-border hover:text-fg"
               >
                 ×
@@ -161,19 +273,19 @@ export function TagField({ label, hint, initial }: { label: string; hint?: strin
             </span>
           ))}
           <input
-            id={id}
+            {...field}
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === "Enter") {
                 event.preventDefault();
                 add();
-              } else if (event.key === "Backspace" && !draft && tags.length) {
-                setTags(tags.slice(0, -1));
+              } else if (event.key === "Backspace" && !draft && value.length) {
+                onChange(value.slice(0, -1));
               }
             }}
             onBlur={add}
-            placeholder={tags.length ? "" : "Add…"}
+            placeholder={value.length ? "" : "Add…"}
             className="min-w-24 flex-1 bg-transparent py-0.5 text-sm outline-none"
           />
         </div>
@@ -182,52 +294,86 @@ export function TagField({ label, hint, initial }: { label: string; hint?: strin
   );
 }
 
-// Repeatable groups (highlights, roles, services...). Each item gets a stable
-// key so removing one doesn't shuffle the typed values of the others.
+// Repeatable groups (highlights, roles, services...) that can be added,
+// removed and reordered. `render` draws one item and gets `update` to change it.
 export function ListField<T>({
   label,
-  initial,
+  items,
+  onChange,
   empty,
   addLabel,
+  error,
   render,
 }: {
   label: string;
-  initial: T[];
+  items: T[];
+  onChange: (items: T[]) => void;
   empty: T;
   addLabel: string;
-  render: (item: T, index: number) => React.ReactNode;
+  error?: string;
+  render: (item: T, update: (item: T) => void, index: number) => React.ReactNode;
 }) {
-  const [items, setItems] = useState(() => initial.map((item, index) => ({ key: index, item })));
-  const [nextKey, setNextKey] = useState(initial.length);
+  // Each item keeps a stable key, so focus and scroll stay with it when moved
+  const [keys, setKeys] = useState(() => items.map((_, index) => index));
+  const [nextKey, setNextKey] = useState(items.length);
+  // The list was replaced from outside (Discard, or a save that dropped blanks)
+  if (keys.length !== items.length) {
+    setKeys(items.map((_, index) => nextKey + index));
+    setNextKey(nextKey + items.length);
+  }
+
+  function change(nextItems: T[], nextKeys: number[]) {
+    setKeys(nextKeys);
+    onChange(nextItems);
+  }
 
   function move(index: number, by: number) {
-    const next = [...items];
-    const [moved] = next.splice(index, 1);
-    next.splice(index + by, 0, moved);
-    setItems(next);
+    const reorder = <V,>(list: V[]) => {
+      const next = [...list];
+      next.splice(index + by, 0, ...next.splice(index, 1));
+      return next;
+    };
+    change(reorder(items), reorder(keys));
   }
 
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm font-medium">{label}</p>
+      {error && <p className="text-xs font-medium text-danger">{error}</p>}
       {items.length === 0 && <p className="rounded-lg border border-dashed border-border-strong px-4 py-6 text-center text-sm text-muted">Nothing here yet.</p>}
-      {items.map(({ key, item }, index) => (
-        <div key={key} className="rounded-lg border border-border bg-sunken/50 p-4">
+      {items.map((item, index) => (
+        <div key={keys[index] ?? `new-${index}`} className="rounded-lg border border-border bg-sunken/50 p-4">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-xs font-medium text-muted">#{index + 1}</span>
             <div className="flex gap-0.5">
-              <IconButton label="Move up" disabled={index === 0} onClick={() => move(index, -1)}>↑</IconButton>
-              <IconButton label="Move down" disabled={index === items.length - 1} onClick={() => move(index, 1)}>↓</IconButton>
-              <IconButton label="Remove" onClick={() => setItems(items.filter((entry) => entry.key !== key))}>×</IconButton>
+              <IconButton label="Move up" disabled={index === 0} onClick={() => move(index, -1)}>
+                ↑
+              </IconButton>
+              <IconButton label="Move down" disabled={index === items.length - 1} onClick={() => move(index, 1)}>
+                ↓
+              </IconButton>
+              <IconButton
+                label="Remove"
+                onClick={() =>
+                  change(
+                    items.filter((_, i) => i !== index),
+                    keys.filter((_, i) => i !== index),
+                  )
+                }
+              >
+                ×
+              </IconButton>
             </div>
           </div>
-          <div className="flex flex-col gap-4">{render(item, index)}</div>
+          <div className="flex flex-col gap-4">
+            {render(item, (next) => onChange(items.map((current, i) => (i === index ? next : current))), index)}
+          </div>
         </div>
       ))}
       <Button
         className="self-start"
         onClick={() => {
-          setItems([...items, { key: nextKey, item: empty }]);
+          change([...items, empty], [...keys, nextKey]);
           setNextKey(nextKey + 1);
         }}
       >
@@ -245,13 +391,10 @@ export function IconButton({ label, children, ...props }: ComponentProps<"button
   );
 }
 
-// Wraps an edit screen: notices edits, shows the save bar once there are any,
-// warns before leaving with unsaved changes, and lists the sections to jump to
-export function EditForm({ sections, children }: { sections?: string[]; children: React.ReactNode }) {
-  const [dirty, setDirty] = useState(false);
-  // Discard remounts the form, resetting every field and list to the loaded content
-  const [version, setVersion] = useState(0);
+// ---- Screens ----
 
+// Wraps an edit screen: the fields, the save bar, and the sections to jump to
+export function EditForm<T>({ editor, sections, saveLabel, children }: { editor: Editor<T>; sections?: string[]; saveLabel?: string; children: React.ReactNode }) {
   // Links like /admin/projects/x#section-case-study arrive before this streamed
   // form exists, so the browser can't scroll to the section by itself
   useEffect(() => {
@@ -261,25 +404,17 @@ export function EditForm({ sections, children }: { sections?: string[]; children
   return (
     <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_10rem] xl:gap-10">
       <form
-        key={version}
-        onChange={() => setDirty(true)}
-        onClick={(event) => {
-          // List add/remove/move buttons change the form without an input event,
-          // but Discard doesn't
-          if ((event.target as HTMLElement).closest("button:not([data-ignore-dirty])")) setDirty(true);
+        // The server checks every field and explains problems beside them
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          editor.submit();
         }}
-        onSubmit={(event) => event.preventDefault()}
         // Room below the last section for the save bar, which wraps to two rows on phones
         className="flex min-w-0 flex-col gap-6 pb-32 sm:pb-24"
       >
         {children}
-        <SaveBar
-          dirty={dirty}
-          onDiscard={() => {
-            setVersion(version + 1);
-            setDirty(false);
-          }}
-        />
+        <SaveBar editor={editor} saveLabel={saveLabel} />
       </form>
       {sections && <SectionNav sections={sections} />}
     </div>
@@ -325,65 +460,59 @@ function SectionNav({ sections }: { sections: string[] }) {
   );
 }
 
-type SaveBarProps = {
-  dirty: boolean;
-  onDiscard?: () => void;
-  // Replaces the default "unsaved changes" text, e.g. with the selected theme
+type SaveBarProps<T> = {
+  editor: Editor<T>;
+  // Replaces the default "Unsaved changes" text, e.g. with the selected theme
   message?: React.ReactNode;
   // Extra buttons before Discard / Save
   actions?: React.ReactNode;
+  saveLabel?: string;
 };
 
-// Appears once there's something to save. Saving itself arrives with the backend.
-export function SaveBar({ dirty, onDiscard, message, actions }: SaveBarProps) {
-  const [nudged, setNudged] = useState(false);
+// Appears once there's something to save, and briefly confirms a save.
+// Ctrl/Cmd+S saves too.
+export function SaveBar<T>({ editor, message, actions, saveLabel = "Save changes" }: SaveBarProps<T>) {
+  const { dirty, pending, justSaved } = editor;
 
-  // Ctrl/Cmd+S would open the browser's "save page" dialog; explain instead
+  const onKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+      // Not the browser's "save page" dialog
+      event.preventDefault();
+      editor.submit();
+    }
+  });
+
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    const onKey = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
-        event.preventDefault();
-        setNudged(true);
-        clearTimeout(timer);
-        timer = setTimeout(() => setNudged(false), 3000);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
+    const listener = (event: KeyboardEvent) => onKeyDown(event);
+    window.addEventListener("keydown", listener);
+    return () => window.removeEventListener("keydown", listener);
   }, []);
 
-  if (!dirty && !nudged) return null;
+  if (!dirty && !pending && !justSaved) return null;
+
+  let status: React.ReactNode;
+  if (pending) status = <p className="font-medium">Saving…</p>;
+  else if (justSaved) status = <p className="font-medium text-success">Saved ✓ <span className="font-normal text-muted">The live site shows it now.</span></p>;
+  else if (editor.message) status = <p className="font-medium text-danger">{editor.message}</p>;
+  else status = message ?? <p className="font-medium">Unsaved changes</p>;
 
   return (
-    <div role="region" aria-label="Unsaved changes" className="admin-slide-up fixed inset-x-0 bottom-0 z-20 border-t border-border bg-panel/95 shadow-[0_-8px_24px_-12px_rgb(0_0_0/0.25)] backdrop-blur lg:left-60">
+    <div role="region" aria-label="Save changes" className="admin-slide-up fixed inset-x-0 bottom-0 z-20 border-t border-border bg-panel/95 shadow-[0_-8px_24px_-12px_rgb(0_0_0/0.25)] backdrop-blur lg:left-60">
       <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-8 lg:px-10">
         <div className="min-w-0 flex-1 basis-72 text-sm" aria-live="polite">
-          {nudged ? (
-            <p className="text-warning">Saving isn&apos;t connected yet. It arrives with the backend.</p>
-          ) : (
-            message ?? (
-              <p>
-                <span className="font-medium">Unsaved changes</span>
-                <span className="text-muted"> · kept in this tab only until saving is connected</span>
-              </p>
-            )
-          )}
+          {status}
         </div>
-        <div className="flex flex-wrap gap-2">
-          {actions}
-          {onDiscard && dirty && (
-            <Button data-ignore-dirty onClick={onDiscard}>
+        {dirty && (
+          <div className="flex flex-wrap gap-2">
+            {actions}
+            <Button onClick={editor.discard} disabled={pending}>
               Discard
             </Button>
-          )}
-          <Button variant="primary" type="submit" disabled title="Saving arrives with the backend">
-            Save changes
-          </Button>
-        </div>
+            <Button variant="primary" onClick={editor.submit} disabled={pending}>
+              {pending ? "Saving…" : saveLabel}
+            </Button>
+          </div>
+        )}
       </div>
       {dirty && <LeaveGuard />}
     </div>

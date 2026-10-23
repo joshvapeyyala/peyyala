@@ -2,23 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { reorderProjects } from "@/app/admin/(portal)/projects/actions";
 import type { Project } from "@/content/types";
-import { IconButton, SaveBar } from "./form";
+import { IconButton, SaveBar, useEditor } from "./form";
 import { statusOptions } from "./options";
 import { Badge, Card } from "./ui";
 
-// The projects in site order. Moving one changes the order on the home board
-// and the Work page once saving is connected.
+// The projects in site order. Saving the new order changes it on the home
+// board and the Work page.
 export function ProjectList({ projects }: { projects: Project[] }) {
-  const [order, setOrder] = useState(projects);
-  const changed = order.some((project, index) => project.slug !== projects[index].slug);
+  const editor = useEditor(projects, (order) => reorderProjects(order.map((project) => project.slug)));
+  const order = editor.value;
 
   function move(index: number, by: number) {
     const next = [...order];
     const [moved] = next.splice(index, 1);
     next.splice(index + by, 0, moved);
-    setOrder(next);
+    editor.set(next);
   }
 
   return (
@@ -56,8 +56,8 @@ export function ProjectList({ projects }: { projects: Project[] }) {
       </Card>
       <p className="mt-3 text-xs text-muted">Projects appear on the site in this order. Use the arrows to change it.</p>
       <SaveBar
-        dirty={changed}
-        onDiscard={() => setOrder(projects)}
+        editor={editor}
+        saveLabel="Save order"
         message={
           <p>
             <span className="font-medium">New order</span>
