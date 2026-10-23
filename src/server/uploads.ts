@@ -1,8 +1,12 @@
 // Checks an uploaded file before it's stored. The type comes from the file's
 // bytes, not its name or the browser's claim, so a renamed file can't slip through.
 import "server-only";
-import { imageSize } from "image-size";
+import { disableTypes, imageSize, types } from "image-size";
 import { maxUploadBytes } from "@/lib/schemas";
+
+// Parse only the formats the site accepts. Fewer parsers means less code
+// reading untrusted bytes (some formats' parsers have had hang bugs).
+disableTypes(types.filter((type) => !["png", "jpg", "webp"].includes(type)));
 
 const maxUploadLabel = `${maxUploadBytes / 1024 / 1024} MB`;
 

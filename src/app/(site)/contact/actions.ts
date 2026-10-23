@@ -49,12 +49,15 @@ export async function sendMessage(_previous: ContactState, formData: FormData): 
 }
 
 // The visitor's IP address, hashed with a secret so it can't be turned back
-// into the address. Behind a proxy or load balancer, the visitor's address is
-// the first entry in x-forwarded-for. That header can be faked when nothing
-// sets it, which the site-wide limit below backs up.
+// into the address. Each proxy in front of the app (load balancer, CDN)
+// appends the address it received the request from to x-forwarded-for, so the
+// visitor's real address is TRUSTED_PROXIES entries from the end; anything
+// before that came from the visitor and could be made up. With no proxy,
+// Next.js fills the header in itself, so 1 is right locally too.
 async function senderHash() {
-  const request = await headers();
-  const ip = request.get("x-forwarded-for")?.split(",")[0]?.trim() || request.get("x-real-ip") || "unknown";
+  const proxies = Math.max(1, Number(process.env.TRUSTED_PROXIES) || 1);
+  const forwarded = (await headers()).get("x-forwarded-for")?.split(",").map((entry) => entry.trim()) ?? [];
+  const ip = forwarded.at(-proxies) ?? forwarded[0] ?? "unknown";
   return createHmac("sha256", process.env.BETTER_AUTH_SECRET ?? "").update(ip).digest("hex").slice(0, 32);
 }
 

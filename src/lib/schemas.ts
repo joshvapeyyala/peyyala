@@ -118,12 +118,16 @@ export type ProjectInput = z.output<typeof projectSchema>;
 
 // ---- Contact form (public) ----
 
+// Line breaks and runs of spaces become single spaces. The name and company go
+// into the notification email's subject, where a line break could add headers.
+const oneLine = (field: z.ZodString) => field.transform((value) => value.replace(/\s+/g, " "));
+
 export const contactSchema = z
   .object({
     topic: z.enum(messageTopics, "Pick what you're reaching out about."),
-    name: required(100, "Please tell me your name."),
+    name: oneLine(required(100, "Please tell me your name.")),
     email: z.string().trim().pipe(z.email("That email address doesn't look right.")),
-    company: text(120),
+    company: oneLine(text(120)),
     message: required(5000, "Please write a message.").min(10, "A little more detail, please."),
   })
   // A job enquiry without a company is hard to act on
