@@ -123,9 +123,8 @@ export function DepartureBoard({ projects, boardingLabel }: Props) {
         {current && (
           <div className="overflow-hidden rounded-2xl border-2 border-accent bg-ink-2 shadow-[0_24px_60px_rgba(0,0,0,0.7)]">
             <ProjectShot project={current} sizes="288px" className="border-b border-line" />
-            <div className="flex flex-col gap-3 p-5">
-              <span className="font-display text-4xl uppercase leading-none">{current.name}</span>
-              <span className="text-sm leading-snug text-soft">{current.summary}</span>
+            <div className="flex flex-col gap-3 p-4">
+              <span className="font-display text-3xl uppercase leading-none">{current.name}</span>
               <span className="flex flex-wrap gap-1.5">
                 {current.stack.slice(0, 4).map((item) => (
                   <span key={item} className="rounded-full bg-line px-2.5 py-1 text-[11px] text-soft">

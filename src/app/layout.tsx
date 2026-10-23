@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     siteName: "Joshva Peyyala",
     url: "/",
   },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export const viewport: Viewport = {
