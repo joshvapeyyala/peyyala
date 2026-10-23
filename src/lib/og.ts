@@ -1,17 +1,21 @@
 // Shared pieces for the generated icons and link-preview images (next/og).
 // next/og can't read next/font's woff2 files, so Anton ships as a TTF.
+import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getTheme } from "@/lib/content";
 
-// Colours follow the admin's chosen palette (src/content/site.ts)
+// Colours follow the admin's chosen palette (Appearance, stored in site_settings)
 export async function themeColors() {
   return (await getTheme()).colors;
 }
 
-const antonData = readFile(join(process.cwd(), "src/assets/fonts/Anton-Regular.ttf"));
+// Read synchronously when the module loads. A pending async read is uncached
+// I/O, and if it hadn't finished when an icon was prerendered, the build
+// randomly made that icon dynamic.
+const antonData = readFileSync(join(process.cwd(), "src/assets/fonts/Anton-Regular.ttf"));
 // Wave's Sora, from @fontsource (next/og reads .woff but not .woff2)
-const soraData = readFile(join(process.cwd(), "node_modules/@fontsource/sora/files/sora-latin-700-normal.woff"));
+const soraData = readFileSync(join(process.cwd(), "node_modules/@fontsource/sora/files/sora-latin-700-normal.woff"));
 
 // The live design's display type, matching the site: Ink sets condensed Anton
 // capitals, Wave sets Sora Bold in sentence case, tightly tracked. Sora is far
@@ -20,7 +24,7 @@ export async function displayType() {
   const { design } = await getTheme();
   if (design === "wave") {
     return {
-      fonts: [{ name: "Sora", data: await soraData, style: "normal" as const, weight: 700 as const }],
+      fonts: [{ name: "Sora", data: soraData, style: "normal" as const, weight: 700 as const }],
       uppercase: false,
       scale: 0.75,
       // Two letters ("JP") only need a little less room
@@ -29,7 +33,7 @@ export async function displayType() {
     };
   }
   return {
-    fonts: [{ name: "Anton", data: await antonData, style: "normal" as const, weight: 400 as const }],
+    fonts: [{ name: "Anton", data: antonData, style: "normal" as const, weight: 400 as const }],
     uppercase: true,
     scale: 1,
     iconScale: 1,

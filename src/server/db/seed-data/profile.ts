@@ -1,4 +1,6 @@
-import type { Education, Job, Profile, SkillGroup } from "./types";
+// Seed content: what `pnpm db:seed` puts in a fresh database. The site reads
+// the database, not this file.
+import type { Education, Job, Profile, SkillGroup } from "@/content/types";
 
 export const profile: Profile = {
   name: "Joshva Peyyala",

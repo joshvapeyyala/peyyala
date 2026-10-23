@@ -23,7 +23,8 @@ export function AppearancePicker({ designs, current }: Props) {
   const [selected, setSelected] = useState(current);
   const [copied, setCopied] = useState(false);
   const changed = selected.design !== current.design || selected.palette !== current.palette;
-  const setting = `export const theme: ThemeSetting = { design: "${selected.design}", palette: "${selected.palette}" };`;
+  // Until saving is connected: the SQL to run by hand (pnpm db:studio has a SQL runner)
+  const setting = `update site_settings set design = '${selected.design}', palette = '${selected.palette}';`;
   const pick = designs.find((d) => d.id === selected.design)?.palettes.find((p) => p.id === selected.palette);
 
   // Arrow keys move the selection within a design's palettes, as radios do
@@ -95,8 +96,8 @@ export function AppearancePicker({ designs, current }: Props) {
               <span className="font-medium">{pick.label}</span>
               <span className="text-muted">
                 {" "}
-                selected. Until saving is connected, copy the setting into <code className="rounded bg-sunken px-1 py-0.5 text-xs">src/content/site.ts</code> and
-                redeploy.
+                selected. Until saving is connected, run the copied SQL in <code className="rounded bg-sunken px-1 py-0.5 text-xs">pnpm db:studio</code>, then
+                restart the server.
               </span>
             </p>
           )
@@ -114,7 +115,7 @@ export function AppearancePicker({ designs, current }: Props) {
               </a>
             )}
             <Button onClick={copy} title={setting}>
-              {copied ? "Copied ✓" : "Copy setting"}
+              {copied ? "Copied ✓" : "Copy SQL"}
             </Button>
           </>
         }

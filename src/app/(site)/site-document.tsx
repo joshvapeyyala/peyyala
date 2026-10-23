@@ -4,7 +4,7 @@ import { fontVariables } from "@/lib/design-fonts";
 import "./site.css";
 
 // Development only: ?design=wave&palette=mint previews any valid pair locally
-// without editing src/content/site.ts. Never shipped in production builds.
+// without changing the live theme. Never shipped in production builds.
 const previewScript = `(() => {
   const valid = ${JSON.stringify(themeIndex())};
   const q = new URLSearchParams(location.search);

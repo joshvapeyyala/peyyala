@@ -153,6 +153,11 @@ export type PaletteName<D extends Design> = keyof (typeof designs)[D]["palettes"
 // Only valid pairs type-check, e.g. { design: "wave", palette: "volt" } is an error
 export type ThemeSetting = { [D in Design]: { design: D; palette: PaletteName<D> } }[Design];
 
+// The stored setting is plain text, so it's checked against the designs in code
+export function isThemeSetting(value: { design: string; palette: string }): value is ThemeSetting {
+  return Object.hasOwn(designs, value.design) && Object.hasOwn(designs[value.design as Design].palettes, value.palette);
+}
+
 type AnyPalette = PaletteDef<string>;
 
 function paletteOf(design: string, palette: string): AnyPalette {

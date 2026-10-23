@@ -1,4 +1,6 @@
-import type { Project } from "./types";
+// Seed content: what `pnpm db:seed` puts in a fresh database. The site reads
+// the database, not this file.
+import type { Project } from "@/content/types";
 
 export const projects: Project[] = [
   {

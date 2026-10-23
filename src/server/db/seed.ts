@@ -1,20 +1,21 @@
-// Imports the site's content from src/content into the database.
+// Fills the database with the seed content in ./seed-data.
 //
 //   pnpm db:seed           fills an empty database
 //   pnpm db:seed --reset   replaces all content (contact messages are kept)
-//   pnpm db:seed --check   only compares the database with src/content
+//   pnpm db:seed --check   only compares the database with the seed content
+//                          (expected to differ once content is edited in the admin)
 //
 // After writing, it reads everything back and compares it with the source
 // files, so nothing is silently lost or changed in the move.
 import "./load-env";
 import { asc } from "drizzle-orm";
 import { isDeepStrictEqual } from "node:util";
-import { education, experience, marqueeStack, profile, skills } from "@/content/profile";
-import { projects } from "@/content/projects";
-import { process as steps, services } from "@/content/services";
-import { theme } from "@/content/site";
 import { db, pool } from "./client";
 import * as t from "./schema";
+import { education, experience, marqueeStack, profile, skills } from "./seed-data/profile";
+import { projects } from "./seed-data/projects";
+import { process as steps, services } from "./seed-data/services";
+import { theme } from "./seed-data/site";
 
 const reset = process.argv.includes("--reset");
 const checkOnly = process.argv.includes("--check");
@@ -51,7 +52,7 @@ async function seed() {
   });
 }
 
-// Reads the rows back into the shapes of src/content and compares
+// Reads the rows back into the seed content's shapes and compares
 async function verify() {
   const [profileRow] = await db.select().from(t.profile);
   const [themeRow] = await db.select().from(t.siteSettings);
@@ -90,12 +91,12 @@ async function verify() {
     const ok = isDeepStrictEqual(sortKeys(actual), sortKeys(expected));
     const count = Array.isArray(expected) ? ` (${expected.length})` : "";
     console.log(`${ok ? "✓" : "✗"} ${label}${count}`);
-    if (!ok) throw new Error(`The database's ${label} don't match src/content. Read back:
+    if (!ok) throw new Error(`The database's ${label} don't match the seed content. Read back:
 ${JSON.stringify(actual, null, 2)}`);
   }
 }
 
-// Drops database-only columns, and nulls (optional fields absent in src/content)
+// Drops database-only columns, and nulls (optional fields absent in the seed content)
 function omit<T extends object>(row: T, ...keys: string[]) {
   return Object.fromEntries(Object.entries(row).filter(([key, value]) => !keys.includes(key) && value !== null));
 }
@@ -111,7 +112,7 @@ function sortKeys(value: unknown): unknown {
 
 (checkOnly ? Promise.resolve() : seed())
   .then(verify)
-  .then(() => console.log(checkOnly ? "Database matches src/content." : "Seed complete."))
+  .then(() => console.log(checkOnly ? "Database matches the seed content." : "Seed complete."))
   .catch((error) => {
     console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;

@@ -1,6 +1,6 @@
 # Designs
 
-The site has one set of markup and several **designs**, each with its own **palettes**. The admin picks one pair in `src/content/site.ts`; visitors can't change it.
+The site has one set of markup and several **designs**, each with its own **palettes**. The admin picks one pair on the admin's Appearance screen (stored in the `site_settings` table); visitors can't change it.
 
 - **Ink** is the base. Its look is written directly in the components with Tailwind classes, and it has no stylesheet here.
 - Every other design is one stylesheet in this folder. It restyles Ink's markup through the hook classes below and never changes the components.
@@ -19,7 +19,7 @@ Add an entry to that design's `palettes` in `src/content/themes.ts`. TypeScript 
 3. **Import it** in `src/app/(site)/site.css`, next to `@import "./designs/wave.css";`.
 4. **New fonts** go in `src/lib/design-fonts.ts` with `preload: false`. Then use the CSS variable, for example `var(--font-sora)`.
 5. **Describe its look** for the admin's Appearance previews: set `preview` in `defineDesign` (display font variable and whether headings are uppercase).
-6. **Check** it with the preview URL on every page, at desktop and phone width, before selecting it in `site.ts`.
+6. **Check** it with the preview URL on every page, at desktop and phone width, before selecting it on Appearance.
 
 ## Colour tokens
 
