@@ -6,9 +6,9 @@ import { ProjectForm } from "@/components/admin/project-form";
 import { buttonBase, buttonStyles } from "@/components/admin/ui";
 import { getProject, getProjects } from "@/lib/content";
 
-// An unknown slug waits for the full render, so notFound() answers with a real 404
-export const ensureStatic = "navigation";
-
+// No ensureStatic here (unlike /work/[slug]): the admin layout reads the
+// session on every request, so the full route can't be static. An unknown slug
+// shows the not-found page with status 200, which only the admin ever sees.
 export async function generateStaticParams() {
   const projects = await getProjects();
   return projects.map((project) => ({ slug: project.slug }));

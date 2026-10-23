@@ -17,7 +17,8 @@ function isActive(pathname: string, href: string) {
   return href === "/admin" ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+// `account` is the signed-in admin and Sign out, rendered on the server
+export function AdminShell({ account, children }: { account: React.ReactNode; children: React.ReactNode }) {
   const pathname = usePathname();
   // The mobile menu stays open only on the page it was opened on, so it
   // closes by itself after navigating
@@ -55,6 +56,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         View live site ↗
       </a>
       <SchemeToggle />
+      <div className="border-t border-border pt-3">{account}</div>
     </div>
   );
 

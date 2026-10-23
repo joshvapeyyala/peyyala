@@ -5,7 +5,7 @@
 // client and drizzle.config.ts stores them as snake_case in Postgres
 // (urlLabel -> url_label).
 import { sql } from "drizzle-orm";
-import { boolean, check, integer, jsonb, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, check, index, integer, jsonb, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import type { CaseStudy, Screenshot } from "@/content/types";
 
 // Shared columns. `position` orders lists the way the admin arranged them.
@@ -139,6 +139,76 @@ export const siteSettings = pgTable(
     updatedAt: timestamps.updatedAt,
   },
   singleRow("site_settings"),
+);
+
+// ---- Admin sign-in (Better Auth) ----
+// The four tables Better Auth needs, with the fields it expects. Ids are text
+// because Better Auth generates them. Only the admin's Google account can
+// ever get a row in auth_users (see src/server/auth.ts).
+
+export const authUsers = pgTable("auth_users", {
+  id: text().primaryKey(),
+  name: text().notNull(),
+  email: text().notNull().unique(),
+  emailVerified: boolean().notNull().default(false),
+  image: text(),
+  createdAt: timestamps.createdAt,
+  updatedAt: timestamps.updatedAt,
+});
+
+export const authSessions = pgTable(
+  "auth_sessions",
+  {
+    id: text().primaryKey(),
+    token: text().notNull().unique(),
+    userId: text()
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    expiresAt: timestamp({ withTimezone: true }).notNull(),
+    ipAddress: text(),
+    userAgent: text(),
+    createdAt: timestamps.createdAt,
+    updatedAt: timestamps.updatedAt,
+  },
+  (table) => [index("auth_sessions_user_id_idx").on(table.userId)],
+);
+
+export const authAccounts = pgTable(
+  "auth_accounts",
+  {
+    id: text().primaryKey(),
+    // Google's id for the account, and which provider it came from
+    accountId: text().notNull(),
+    providerId: text().notNull(),
+    userId: text()
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    accessToken: text(),
+    refreshToken: text(),
+    idToken: text(),
+    accessTokenExpiresAt: timestamp({ withTimezone: true }),
+    refreshTokenExpiresAt: timestamp({ withTimezone: true }),
+    scope: text(),
+    // Unused: there's no email/password sign-in
+    password: text(),
+    createdAt: timestamps.createdAt,
+    updatedAt: timestamps.updatedAt,
+  },
+  (table) => [index("auth_accounts_user_id_idx").on(table.userId)],
+);
+
+// Short-lived values for the OAuth round trip (state, PKCE verifier)
+export const authVerifications = pgTable(
+  "auth_verifications",
+  {
+    id: text().primaryKey(),
+    identifier: text().notNull(),
+    value: text().notNull(),
+    expiresAt: timestamp({ withTimezone: true }).notNull(),
+    createdAt: timestamps.createdAt,
+    updatedAt: timestamps.updatedAt,
+  },
+  (table) => [index("auth_verifications_identifier_idx").on(table.identifier)],
 );
 
 // ---- Contact messages (the admin Inbox) ----
