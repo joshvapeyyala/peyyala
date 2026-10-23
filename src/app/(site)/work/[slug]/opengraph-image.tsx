@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getProject, getProjects } from "@/lib/content";
-import { antonFont, themeColors, publicImage } from "@/lib/og";
+import { displayCase, displayType, publicImage, themeColors } from "@/lib/og";
 
 export const alt = "Project case study by Joshva Peyyala";
 export const size = { width: 1200, height: 630 };
@@ -14,7 +14,8 @@ export async function generateStaticParams() {
 export default async function OpenGraphImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const project = await getProject(slug);
-  const fonts = await antonFont();
+  const type = await displayType();
+  const fonts = type.fonts;
   const colors = await themeColors();
 
   if (!project) {
@@ -48,9 +49,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
         >
           <span style={{ fontSize: 24, color: colors.muted, letterSpacing: 3 }}>CASE STUDY</span>
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <span style={{ fontFamily: "Anton", fontSize: 120, lineHeight: 0.9 }}>
-              {project.name.toUpperCase()}
-            </span>
+            <span style={{ ...type.style(Math.round(120 * type.scale)), lineHeight: type.uppercase ? 0.9 : 1 }}>{displayCase(project.name, type)}</span>
             <span style={{ fontSize: 30, color: colors.muted }}>{project.category}</span>
           </div>
           <span style={{ fontSize: 26 }}>

@@ -1,4 +1,9 @@
+/* Public site styles. Tailwind only scans the site's own files, so admin
+   classes never end up in this stylesheet (admin has src/app/admin/admin.css). */
 @import "tailwindcss";
+@source not "../admin";
+@source not "../../components/admin";
+
 /* One stylesheet per design other than Ink (see designs/README.md). The palette
    colours are generated from src/content/themes.ts into the page head. */
 @import "./designs/wave.css";

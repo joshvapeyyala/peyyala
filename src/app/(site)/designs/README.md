@@ -15,10 +15,11 @@ Add an entry to that design's `palettes` in `src/content/themes.ts`. TypeScript 
 ## Add a design
 
 1. **Register it** in `src/content/themes.ts`: `const name = defineDesign<ExtraToken>()({ label, palettes })`, then add it to `designs`. `ExtraToken` lists any colour tokens your stylesheet needs beyond the base set (see Wave's `WaveToken`); use `defineDesign()` if there are none.
-2. **Style it** in `src/app/designs/<name>.css`, with every rule scoped to `[data-design="<name>"]`. Keep it outside `@layer` so it overrides the components' Tailwind utilities, as `wave.css` does.
-3. **Import it** in `src/app/globals.css`, next to `@import "./designs/wave.css";`.
-4. **New fonts** go in `src/app/fonts.ts` with `preload: false`. Then use the CSS variable, for example `var(--font-sora)`.
-5. **Check** it with the preview URL on every page, at desktop and phone width, before selecting it in `site.ts`.
+2. **Style it** in `src/app/(site)/designs/<name>.css`, with every rule scoped to `[data-design="<name>"]`. Keep it outside `@layer` so it overrides the components' Tailwind utilities, as `wave.css` does.
+3. **Import it** in `src/app/(site)/site.css`, next to `@import "./designs/wave.css";`.
+4. **New fonts** go in `src/lib/design-fonts.ts` with `preload: false`. Then use the CSS variable, for example `var(--font-sora)`.
+5. **Describe its look** for the admin's Appearance previews: set `preview` in `defineDesign` (display font variable and whether headings are uppercase).
+6. **Check** it with the preview URL on every page, at desktop and phone width, before selecting it in `site.ts`.
 
 ## Colour tokens
 

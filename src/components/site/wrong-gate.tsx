@@ -1,8 +1,9 @@
 import Link from "next/link";
 
-export default function NotFound() {
+// Shared by the site's not-found.tsx and the app-wide global-not-found.tsx
+export function WrongGate() {
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 py-20 sm:px-8 lg:px-10">
+    <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 py-20 sm:px-8 lg:px-10">
       <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
         Error 404 · Flight not found
       </p>
@@ -15,6 +16,6 @@ export default function NotFound() {
       >
         Back to home →
       </Link>
-    </main>
+    </div>
   );
 }

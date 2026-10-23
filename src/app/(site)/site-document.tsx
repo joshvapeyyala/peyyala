@@ -1,31 +1,7 @@
-import type { Metadata, Viewport } from "next";
 import { paletteCss, themeIndex } from "@/content/themes";
 import { getTheme } from "@/lib/content";
-import { fontVariables } from "./fonts";
-import "./globals.css";
-
-export const metadata: Metadata = {
-  metadataBase: new URL("https://peyyala.com"),
-  title: {
-    default: "Joshva Peyyala — Backend-focused full-stack developer",
-    template: "%s — Joshva Peyyala",
-  },
-  description:
-    "Software engineer building production REST APIs and web apps with Node.js, Express and Next.js. Creator of CareDeck, Xpensefy and Lineage. Open to full-time roles.",
-  openGraph: {
-    type: "website",
-    siteName: "Joshva Peyyala",
-    url: "/",
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-};
-
-export async function generateViewport(): Promise<Viewport> {
-  const theme = await getTheme();
-  return { themeColor: theme.colors.bg, colorScheme: theme.colors.scheme };
-}
+import { fontVariables } from "@/lib/design-fonts";
+import "./site.css";
 
 // Development only: ?design=wave&palette=mint previews any valid pair locally
 // without editing src/content/site.ts. Never shipped in production builds.
@@ -39,7 +15,8 @@ const previewScript = `(() => {
   }
 })();`;
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+// The public site's <html> document, shared by its root layout and the global 404
+export async function SiteDocument({ children }: { children: React.ReactNode }) {
   const theme = await getTheme();
 
   return (

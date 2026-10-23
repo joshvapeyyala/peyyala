@@ -1,0 +1,116 @@
+/* Admin portal styles. Separate from the public site: Tailwind only scans the
+   admin's own files, and the site's Ink/Wave themes never apply here. */
+@import "tailwindcss" source(none);
+@source "./";
+@source "../../components/admin";
+
+:root {
+  --bg: #f7f7f8;
+  --panel: #ffffff;
+  --sunken: #f1f1f3;
+  --fg: #18181b;
+  --muted: #5f5f6a;
+  --border: #e4e4e7;
+  --border-strong: #d1d1d6;
+  --primary: #4f46e5;
+  --primary-fg: #ffffff;
+  --success: #15803d;
+  --success-bg: #e8f6ec;
+  --warning: #a16207;
+  --warning-bg: #fdf4dc;
+  --danger: #b91c1c;
+  --danger-bg: #fdecec;
+  color-scheme: light;
+}
+
+/* Dark follows the system unless the admin picked a scheme in the sidebar
+   (stored per browser and set as data-scheme on <html> before paint) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-scheme="light"]) {
+    --bg: #0e0e11;
+    --panel: #16161a;
+    --sunken: #1c1c21;
+    --fg: #ececef;
+    --muted: #9d9daa;
+    --border: #27272d;
+    --border-strong: #3a3a42;
+    --primary: #8b87ff;
+    --primary-fg: #0e0e11;
+    --success: #5ee0a0;
+    --success-bg: rgba(94, 224, 160, 0.12);
+    --warning: #f5c451;
+    --warning-bg: rgba(245, 196, 81, 0.12);
+    --danger: #ff8a8a;
+    --danger-bg: rgba(255, 138, 138, 0.12);
+    color-scheme: dark;
+  }
+}
+
+:root[data-scheme="dark"] {
+  --bg: #0e0e11;
+  --panel: #16161a;
+  --sunken: #1c1c21;
+  --fg: #ececef;
+  --muted: #9d9daa;
+  --border: #27272d;
+  --border-strong: #3a3a42;
+  --primary: #8b87ff;
+  --primary-fg: #0e0e11;
+  --success: #5ee0a0;
+  --success-bg: rgba(94, 224, 160, 0.12);
+  --warning: #f5c451;
+  --warning-bg: rgba(245, 196, 81, 0.12);
+  --danger: #ff8a8a;
+  --danger-bg: rgba(255, 138, 138, 0.12);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-sunken: var(--sunken);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --font-sans: var(--font-admin);
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@keyframes admin-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.admin-slide-up {
+  animation: admin-slide-up 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-slide-up {
+    animation: none;
+  }
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-fg);
+}

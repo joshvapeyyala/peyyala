@@ -10,9 +10,36 @@ export async function themeColors() {
 }
 
 const antonData = readFile(join(process.cwd(), "src/assets/fonts/Anton-Regular.ttf"));
+// Wave's Sora, from @fontsource (next/og reads .woff but not .woff2)
+const soraData = readFile(join(process.cwd(), "node_modules/@fontsource/sora/files/sora-latin-700-normal.woff"));
 
-export async function antonFont() {
-  return [{ name: "Anton", data: await antonData, style: "normal" as const, weight: 400 as const }];
+// The live design's display type, matching the site: Ink sets condensed Anton
+// capitals, Wave sets Sora Bold in sentence case, tightly tracked. Sora is far
+// wider, so `scale` shrinks font sizes chosen for Anton.
+export async function displayType() {
+  const { design } = await getTheme();
+  if (design === "wave") {
+    return {
+      fonts: [{ name: "Sora", data: await soraData, style: "normal" as const, weight: 700 as const }],
+      uppercase: false,
+      scale: 0.75,
+      // Two letters ("JP") only need a little less room
+      iconScale: 0.8,
+      style: (fontSize: number) => ({ fontFamily: "Sora", fontWeight: 700, fontSize, letterSpacing: -0.045 * fontSize }),
+    };
+  }
+  return {
+    fonts: [{ name: "Anton", data: await antonData, style: "normal" as const, weight: 400 as const }],
+    uppercase: true,
+    scale: 1,
+    iconScale: 1,
+    style: (fontSize: number) => ({ fontFamily: "Anton", fontSize }),
+  };
+}
+
+// Display text in the live design's case
+export function displayCase(text: string, type: { uppercase: boolean }) {
+  return type.uppercase ? text.toUpperCase() : text;
 }
 
 // Reads an image from /public as a data URL for <img> inside ImageResponse

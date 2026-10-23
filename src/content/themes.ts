@@ -2,12 +2,12 @@
 //
 // A design is the layout and typography. Ink is the base styling written in
 // the components; other designs restyle the same markup with a stylesheet in
-// src/app/designs/. A palette only swaps colours; its tokens become CSS
+// src/app/(site)/designs/. A palette only swaps colours; its tokens become CSS
 // variables (--ink, --accent, ...) scoped to [data-design][data-theme], so
 // palette names only need to be unique within their design.
 //
 // Add a palette: add an entry to a design's `palettes` below. Nothing else.
-// Add a design: see src/app/designs/README.md.
+// Add a design: see src/app/(site)/designs/README.md.
 
 // Every palette sets these. "ink" is the page background and "paper" the main
 // text, whichever is light or dark.
@@ -33,11 +33,19 @@ type PaletteDef<Extra extends string> = {
 // `Extra` lists the tokens a design's stylesheet needs on top of the base set,
 // so TypeScript flags any palette of that design that forgets one.
 function defineDesign<Extra extends string = never>() {
-  return <P extends Record<string, PaletteDef<Extra>>>(design: { label: string; palettes: P }) => design;
+  return <P extends Record<string, PaletteDef<Extra>>>(design: {
+    label: string;
+    description: string;
+    // How the admin's Appearance screen draws a miniature of this design
+    preview: { displayFont: string; uppercase: boolean };
+    palettes: P;
+  }) => design;
 }
 
 const ink = defineDesign()({
   label: "Ink",
+  description: "Departure-board look: condensed Anton capitals, hollow lettering, pill buttons.",
+  preview: { displayFont: "var(--font-anton)", uppercase: true },
   palettes: {
     ink: {
       label: "Ink",
@@ -80,6 +88,8 @@ const darkWaveShadows = { shadow: "rgba(0, 0, 0, 0.55)", "card-shadow": "0 24px 
 
 const wave = defineDesign<WaveToken>()({
   label: "Wave",
+  description: "Stripe-style SaaS polish: Sora headlines, a slanted gradient wave, floating tiles.",
+  preview: { displayFont: "var(--font-sora)", uppercase: false },
   palettes: {
     wave: {
       label: "Wave",

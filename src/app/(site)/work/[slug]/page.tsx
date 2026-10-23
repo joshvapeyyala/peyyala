@@ -8,6 +8,10 @@ import { SectionLabel } from "@/components/site/section-label";
 import { statusMeta } from "@/components/site/status-badge";
 import { getProject, getProjects } from "@/lib/content";
 
+// An unknown slug waits for the full render instead of streaming in after a
+// fallback, so notFound() can still answer with a real 404 status
+export const ensureStatic = "navigation";
+
 export async function generateStaticParams() {
   const projects = await getProjects();
   return projects.map((project) => ({ slug: project.slug }));
@@ -16,7 +20,7 @@ export async function generateStaticParams() {
 export async function generateMetadata(props: PageProps<"/work/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
   const project = await getProject(slug);
-  if (!project) return {};
+  if (!project) return { title: "Project not found" };
   return { title: `${project.name} — ${project.category}`, description: project.summary };
 }
 

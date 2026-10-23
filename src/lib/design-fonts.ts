@@ -1,7 +1,8 @@
 import { Anton, Inter, Sora } from "next/font/google";
 
-// Every font any design uses. next/font needs them declared statically, so a
-// new design's font goes here; its stylesheet then uses the CSS variable.
+// Every font any site design uses. next/font needs them declared statically,
+// so a new design's font goes here; its stylesheet then uses the CSS variable.
+// Shared: the site applies them, and the admin's Appearance previews use them.
 
 const inter = Inter({
   variable: "--font-inter",
