@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getProfile } from "@/lib/content";
-import { antonFont, colors } from "@/lib/og";
+import { antonFont, themeColors } from "@/lib/og";
 
 export const alt = "Joshva Peyyala — I build backends that ship real products";
 export const size = { width: 1200, height: 630 };
@@ -11,6 +11,7 @@ const headline = { fontFamily: "Anton", fontSize: 112, lineHeight: 0.95 };
 
 export default async function OpenGraphImage() {
   const profile = await getProfile();
+  const colors = await themeColors();
 
   return new ImageResponse(
     (
@@ -22,8 +23,8 @@ export default async function OpenGraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "64px 72px",
-          background: colors.ink,
-          color: colors.paper,
+          background: colors.bg,
+          color: colors.fg,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 26, color: colors.muted, letterSpacing: 3 }}>
@@ -40,7 +41,7 @@ export default async function OpenGraphImage() {
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 26, color: colors.muted }}>
           <span>Node.js · Express · Next.js · PostgreSQL</span>
-          <span style={{ color: colors.paper }}>peyyala.com</span>
+          <span style={{ color: colors.fg }}>peyyala.com</span>
         </div>
       </div>
     ),

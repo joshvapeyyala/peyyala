@@ -48,7 +48,7 @@ export default async function WorkPage() {
           <li key={project.slug}>
             <Link
               href={`/work/${project.slug}`}
-              className="group flex h-full flex-col gap-5 rounded-3xl border border-line bg-ink-2 p-6 transition hover:border-accent sm:p-7"
+              className="card group flex h-full flex-col gap-5 rounded-3xl border border-line bg-ink-2 p-6 transition hover:border-accent sm:p-7"
             >
               <div className="flex items-center justify-between text-sm">
                 <span className="font-display text-xl text-muted">

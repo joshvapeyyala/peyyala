@@ -15,7 +15,7 @@ export default async function ServicesPage() {
   return (
     <div className="mx-auto max-w-7xl px-5 pt-12 pb-20 sm:px-8 lg:px-10 lg:pt-16">
       <SectionLabel>Freelance · Services</SectionLabel>
-      <h1 className="mt-6 max-w-5xl text-[clamp(2.25rem,5vw,4.25rem)] font-semibold leading-[1.05] tracking-[-0.02em]">
+      <h1 className="statement mt-6 max-w-5xl text-[clamp(2.25rem,5vw,4.25rem)] font-semibold leading-[1.05] tracking-[-0.02em]">
         Web apps, backends and first versions for{" "}
         <span className="text-accent">small businesses and founders.</span>
       </h1>
@@ -26,7 +26,7 @@ export default async function ServicesPage() {
 
       <ul className="mt-16 grid gap-5 lg:grid-cols-3">
         {services.map((service, index) => (
-          <li key={service.title} className="flex flex-col gap-4 rounded-3xl border border-line bg-ink-2 p-6 sm:p-7">
+          <li key={service.title} className="card flex flex-col gap-4 rounded-3xl border border-line bg-ink-2 p-6 sm:p-7">
             <span className="font-display text-xl text-muted">{String(index + 1).padStart(2, "0")}</span>
             <h2 className="font-display text-4xl uppercase leading-none">{service.title}</h2>
             <p className="leading-relaxed text-soft">{service.description}</p>
@@ -41,7 +41,7 @@ export default async function ServicesPage() {
 
       <section className="mt-24">
         <SectionLabel>How I work</SectionLabel>
-        <ol className="mt-6 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="card mt-6 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {process.map((item) => (
             <li key={item.step} className="flex flex-col gap-2 bg-ink p-6 sm:p-7">
               <span className="font-display text-5xl text-muted">{item.step}</span>
@@ -68,7 +68,7 @@ export default async function ServicesPage() {
             ))}
           </ul>
         </div>
-        <div className="flex flex-col gap-6 rounded-3xl bg-accent p-7 text-ink sm:p-10">
+        <div className="flex flex-col gap-6 rounded-3xl bg-accent p-7 text-on-accent sm:p-10">
           <p className="font-display text-5xl uppercase leading-[0.95] sm:text-6xl">
             Pricing on request
           </p>

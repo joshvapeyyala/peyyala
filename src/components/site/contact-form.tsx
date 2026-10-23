@@ -39,7 +39,7 @@ export function ContactForm({ email }: { email: string }) {
               key={item.id}
               className={`inline-flex h-11 cursor-pointer items-center rounded-full border px-5 text-sm font-semibold transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${
                 topic === item.id
-                  ? "border-accent bg-accent text-ink"
+                  ? "border-accent bg-accent text-on-accent"
                   : "border-line text-soft hover:border-paper hover:text-paper"
               }`}
             >
@@ -90,7 +90,7 @@ export function ContactForm({ email }: { email: string }) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <button
           type="submit"
-          className="inline-flex h-14 items-center justify-center rounded-full bg-accent px-8 text-[15px] font-bold text-ink transition hover:brightness-110"
+          className="btn-primary inline-flex h-14 items-center justify-center rounded-full bg-accent px-8 text-[15px] font-bold text-on-accent transition hover:brightness-110"
         >
           Send message →
         </button>

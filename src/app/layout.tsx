@@ -1,17 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Inter } from "next/font/google";
+import { paletteCss, themeIndex } from "@/content/themes";
+import { getTheme } from "@/lib/content";
+import { fontVariables } from "./fonts";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const anton = Anton({
-  variable: "--font-anton",
-  weight: "400",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://peyyala.com"),
@@ -31,16 +22,41 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
-};
+export async function generateViewport(): Promise<Viewport> {
+  const theme = await getTheme();
+  return { themeColor: theme.colors.bg, colorScheme: theme.colors.scheme };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+// Development only: ?design=wave&palette=mint previews any valid pair locally
+// without editing src/content/site.ts. Never shipped in production builds.
+const previewScript = `(() => {
+  const valid = ${JSON.stringify(themeIndex())};
+  const q = new URLSearchParams(location.search);
+  const design = q.get("design"), palette = q.get("palette");
+  if (valid[design]?.includes(palette)) {
+    document.documentElement.dataset.design = design;
+    document.documentElement.dataset.theme = palette;
+  }
+})();`;
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const theme = await getTheme();
+
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${anton.variable} h-full antialiased`}
+      data-design={theme.design}
+      data-theme={theme.palette}
+      // The development preview script may change the two attributes above
+      suppressHydrationWarning={process.env.NODE_ENV === "development"}
+      className={`${fontVariables} h-full antialiased`}
     >
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: paletteCss() }} />
+        {process.env.NODE_ENV === "development" && (
+          <script dangerouslySetInnerHTML={{ __html: previewScript }} />
+        )}
+      </head>
       <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>
   );

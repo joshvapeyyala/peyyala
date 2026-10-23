@@ -6,12 +6,12 @@ export default function NotFound() {
       <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted">
         Error 404 · Flight not found
       </p>
-      <h1 className="mt-4 font-display text-[clamp(5rem,22vw,16rem)] uppercase leading-[0.85]">
+      <h1 className="mega-title mt-4 font-display text-[clamp(5rem,22vw,16rem)] uppercase leading-[0.85]">
         Wrong <span className="text-outline">gate.</span>
       </h1>
       <Link
         href="/"
-        className="mt-10 inline-flex h-14 items-center self-start rounded-full bg-accent px-7 text-[15px] font-bold text-ink"
+        className="btn-primary mt-10 inline-flex h-14 items-center self-start rounded-full bg-accent px-7 text-[15px] font-bold text-on-accent"
       >
         Back to home →
       </Link>

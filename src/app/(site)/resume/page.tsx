@@ -32,7 +32,7 @@ export default async function ResumePage() {
         <a
           href={profile.resumePdf}
           download
-          className="inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-[15px] font-bold text-ink transition hover:brightness-110 sm:h-14 sm:px-7"
+          className="btn-primary inline-flex h-12 items-center justify-center rounded-full bg-accent px-6 text-[15px] font-bold text-on-accent transition hover:brightness-110 sm:h-14 sm:px-7"
         >
           Download PDF ↓
         </a>

@@ -1,16 +1,7 @@
 @import "tailwindcss";
-
-:root {
-  --ink: #0a0a0a;
-  --ink-2: #141414;
-  --paper: #f5f5f4;
-  --muted: #a8a29e;
-  --soft: #d6d3d1;
-  --line: #292524;
-  --edge: #57534e;
-  --accent: #ff5533;
-  --live: #4ade80;
-}
+/* One stylesheet per design other than Ink (see designs/README.md). The palette
+   colours are generated from src/content/themes.ts into the page head. */
+@import "./designs/wave.css";
 
 @theme inline {
   --color-ink: var(--ink);
@@ -21,6 +12,7 @@
   --color-line: var(--line);
   --color-edge: var(--edge);
   --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
   --color-live: var(--live);
   --font-sans: var(--font-inter);
   --font-display: var(--font-anton);
@@ -38,7 +30,7 @@ body {
 
 ::selection {
   background: var(--accent);
-  color: var(--ink);
+  color: var(--on-accent);
 }
 
 :focus-visible {

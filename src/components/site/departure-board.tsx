@@ -80,7 +80,7 @@ export function DepartureBoard({ projects, boardingLabel }: Props) {
           );
         })}
 
-        <li className="border-b border-line bg-ink-2">
+        <li className="board-cta border-b border-line bg-ink-2">
           <Link
             href="/contact"
             className={`${rowGrid} group py-5 md:py-6`}
@@ -115,13 +115,13 @@ export function DepartureBoard({ projects, boardingLabel }: Props) {
 
       <div
         aria-hidden="true"
-        className={`pointer-events-none absolute right-[22%] z-10 hidden w-72 -translate-y-1/2 transition-[top,opacity,transform] duration-300 ease-out lg:block ${
+        className={`board-peek pointer-events-none absolute right-[22%] z-10 hidden w-72 -translate-y-1/2 transition-[top,opacity,transform] duration-300 ease-out lg:block ${
           current ? "rotate-[-5deg] opacity-100" : "rotate-0 opacity-0"
         }`}
         style={{ top: top + 30 }}
       >
         {current && (
-          <div className="overflow-hidden rounded-2xl border-2 border-accent bg-ink-2 shadow-[0_24px_60px_rgba(0,0,0,0.7)]">
+          <div className="overflow-hidden rounded-2xl border-2 border-accent bg-ink-2 shadow-[0_24px_60px_var(--shadow)]">
             <ProjectShot project={current} sizes="288px" className="border-b border-line" />
             <div className="flex flex-col gap-3 p-4">
               <span className="font-display text-3xl uppercase leading-none">{current.name}</span>

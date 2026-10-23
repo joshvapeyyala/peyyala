@@ -9,7 +9,7 @@ export const statusMeta: Record<ProjectStatus, { label: string; detail: string; 
 export function StatusBadge({ status, className = "" }: { status: ProjectStatus; className?: string }) {
   const meta = statusMeta[status];
   return (
-    <span className={`font-bold uppercase tracking-[0.08em] ${meta.color} ${className}`}>
+    <span className={`status-badge font-bold uppercase tracking-[0.08em] ${meta.color} ${className}`}>
       <span aria-hidden="true">● </span>
       {meta.label}
     </span>

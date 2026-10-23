@@ -2,15 +2,12 @@
 // next/og can't read next/font's woff2 files, so Anton ships as a TTF.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { getTheme } from "@/lib/content";
 
-export const colors = {
-  ink: "#0a0a0a",
-  ink2: "#141414",
-  paper: "#f5f5f4",
-  muted: "#a8a29e",
-  line: "#292524",
-  accent: "#ff5533",
-};
+// Colours follow the admin's chosen palette (src/content/site.ts)
+export async function themeColors() {
+  return (await getTheme()).colors;
+}
 
 const antonData = readFile(join(process.cwd(), "src/assets/fonts/Anton-Regular.ttf"));
 

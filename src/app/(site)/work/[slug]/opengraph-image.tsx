@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getProject, getProjects } from "@/lib/content";
-import { antonFont, colors, publicImage } from "@/lib/og";
+import { antonFont, themeColors, publicImage } from "@/lib/og";
 
 export const alt = "Project case study by Joshva Peyyala";
 export const size = { width: 1200, height: 630 };
@@ -15,10 +15,11 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
   const { slug } = await params;
   const project = await getProject(slug);
   const fonts = await antonFont();
+  const colors = await themeColors();
 
   if (!project) {
     return new ImageResponse(
-      <div style={{ width: "100%", height: "100%", display: "flex", background: colors.ink }} />,
+      <div style={{ width: "100%", height: "100%", display: "flex", background: colors.bg }} />,
       { ...size, fonts },
     );
   }
@@ -32,8 +33,8 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
           width: "100%",
           height: "100%",
           display: "flex",
-          background: colors.ink,
-          color: colors.paper,
+          background: colors.bg,
+          color: colors.fg,
         }}
       >
         <div

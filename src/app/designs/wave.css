@@ -1,0 +1,199 @@
+/* Wave design: Stripe-style. Restyles Ink's markup through the hook classes
+   listed in README.md. Rules stay outside Tailwind's layers on purpose, since
+   unlayered CSS beats the utility classes in the components. Wave's extra
+   colour tokens (--band, --tile, ...) are declared in src/content/themes.ts. */
+
+/* The slanted gradient band behind the header and page intro */
+[data-design="wave"] body {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-design="wave"] body::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -200px;
+  left: 0;
+  right: 0;
+  height: 620px;
+  transform: skewY(-11deg);
+  transform-origin: 0;
+  background: var(--band);
+  opacity: var(--band-opacity);
+  pointer-events: none;
+}
+
+/* Type: Sora, sentence case, tight, in place of Anton capitals */
+[data-design="wave"] .font-display {
+  font-family: var(--font-sora), sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+/* Sora is far wider than condensed Anton, so the largest headings shrink */
+[data-design="wave"] .hero-title {
+  font-size: clamp(2.6rem, 10vw, 8rem);
+  line-height: 1.04;
+}
+
+[data-design="wave"] .mega-title {
+  font-size: clamp(3.5rem, 13vw, 10rem);
+}
+
+[data-design="wave"] .stat-title {
+  font-size: clamp(3.5rem, 9vw, 7rem);
+}
+
+[data-design="wave"] .statement,
+[data-design="wave"] .label,
+[data-design="wave"] .brand,
+[data-design="wave"] .nav-link {
+  font-family: var(--font-sora), sans-serif;
+}
+
+[data-design="wave"] .statement {
+  font-weight: 700;
+  letter-spacing: -0.045em;
+}
+
+[data-design="wave"] .label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+[data-design="wave"] .text-outline {
+  color: var(--paper);
+  -webkit-text-stroke: 0;
+}
+
+/* The accent word sits on a floating tile; the JP badge becomes a tile too */
+[data-design="wave"] .accent-tile {
+  color: var(--tile-fg);
+  background: var(--tile);
+  padding: 0 0.12em;
+  border-radius: 0.18em;
+  box-shadow: 0 14px 40px var(--shadow), 0 0 40px var(--glow);
+}
+
+[data-design="wave"] .hero-badge {
+  border: 0;
+  background: var(--tile);
+  box-shadow: 0 10px 30px var(--shadow);
+}
+
+[data-design="wave"] .hero-badge > span {
+  color: var(--tile-fg);
+  letter-spacing: 0;
+}
+
+/* Header: transparent over the band, solid once the page scrolls */
+[data-design="wave"] .site-header {
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+[data-design="wave"] .site-header[data-scrolled] {
+  background: color-mix(in srgb, var(--ink) 85%, transparent);
+  border-color: var(--line);
+  backdrop-filter: blur(12px);
+}
+
+[data-design="wave"] .brand {
+  font-size: 17px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+[data-design="wave"] .nav-link {
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--paper);
+}
+
+[data-design="wave"] .site-header .btn-primary {
+  font-family: var(--font-sora), sans-serif;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+[data-design="wave"] .nav-link[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+/* Buttons and cards */
+[data-design="wave"] .btn-primary {
+  box-shadow: 0 8px 24px var(--glow);
+}
+
+[data-design="wave"] .btn-ghost {
+  background: var(--ink-2);
+  border-color: var(--line);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+[data-design="wave"] .card {
+  border-color: var(--line);
+  box-shadow: var(--card-shadow);
+}
+
+/* Tech strip */
+[data-design="wave"] .marquee {
+  background: var(--strip-bg);
+  color: var(--strip-fg);
+}
+
+[data-design="wave"] .marquee-track {
+  font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+}
+
+[data-design="wave"] .marquee-star {
+  color: var(--accent);
+}
+
+/* Departure board */
+[data-design="wave"] .board-cta {
+  margin-top: 8px;
+  border-radius: 14px;
+  border-bottom-color: transparent;
+  background: var(--ink-2);
+  box-shadow: var(--card-shadow);
+}
+
+[data-design="wave"] .board-cta > a {
+  padding-inline: 16px;
+}
+
+[data-design="wave"] .board-peek {
+  rotate: 0deg;
+}
+
+[data-design="wave"] .board-peek > div {
+  border-width: 1px;
+  border-color: var(--edge);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+}
+
+[data-design="wave"] .status-badge {
+  width: fit-content;
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--live-chip);
+}
+
+@media print {
+  [data-design="wave"] body::before {
+    display: none;
+  }
+}

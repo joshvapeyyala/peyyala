@@ -2,8 +2,8 @@ import Link from "next/link";
 import type { ComponentProps } from "react";
 
 const styles = {
-  primary: "bg-accent text-ink hover:brightness-110",
-  outline: "border border-edge text-paper hover:border-paper",
+  primary: "btn-primary bg-accent text-on-accent hover:brightness-110",
+  outline: "btn-ghost border border-edge text-paper hover:border-paper",
 };
 
 type Props = ComponentProps<typeof Link> & { variant?: keyof typeof styles };

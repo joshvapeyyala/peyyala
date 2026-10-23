@@ -12,6 +12,7 @@ function isActive(pathname: string, href: string) {
 export function SiteHeader({ name }: { name: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLElement>(null);
 
@@ -31,13 +32,24 @@ export function SiteHeader({ name }: { name: string }) {
     };
   }, [open]);
 
+  // The Wave design keeps the header transparent until the page scrolls
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <>
-      <header className="no-print sticky top-0 z-40 border-b border-line/60 bg-ink/85 backdrop-blur-md">
+      <header
+        data-scrolled={scrolled || undefined}
+        className="site-header no-print sticky top-0 z-40 border-b border-line/60 bg-ink/85 backdrop-blur-md"
+      >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
           <Link
             href="/"
-            className="text-[13px] font-semibold uppercase tracking-[0.12em] text-paper"
+            className="brand text-[13px] font-semibold uppercase tracking-[0.12em] text-paper"
             onClick={() => setOpen(false)}
           >
             {name}
@@ -55,8 +67,8 @@ export function SiteHeader({ name }: { name: string }) {
                       aria-current={active ? "page" : undefined}
                       className={
                         isContact
-                          ? "ml-3 inline-flex h-10 items-center rounded-full bg-accent px-5 text-[13px] font-bold uppercase tracking-[0.08em] text-ink transition hover:brightness-110"
-                          : `inline-flex h-10 items-center px-3 text-[13px] font-semibold uppercase tracking-[0.1em] transition hover:text-paper ${
+                          ? "btn-primary ml-3 inline-flex h-10 items-center rounded-full bg-accent px-5 text-[13px] font-bold uppercase tracking-[0.08em] text-on-accent transition hover:brightness-110"
+                          : `nav-link inline-flex h-10 items-center px-3 text-[13px] font-semibold uppercase tracking-[0.1em] transition hover:text-paper ${
                               active ? "text-accent" : "text-soft"
                             }`
                       }

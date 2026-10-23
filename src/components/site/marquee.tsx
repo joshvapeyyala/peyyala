@@ -4,7 +4,7 @@ export function Marquee({ items, label }: { items: string[]; label: string }) {
       {items.map((item) => (
         <span key={item} className="flex items-center gap-8">
           {item}
-          <span className="text-ink/60">✦</span>
+          <span className="marquee-star text-on-accent/60">✦</span>
         </span>
       ))}
     </span>
@@ -14,7 +14,7 @@ export function Marquee({ items, label }: { items: string[]; label: string }) {
     <div
       role="img"
       aria-label={label}
-      className="overflow-hidden bg-accent py-3 text-ink sm:py-4"
+      className="marquee overflow-hidden bg-accent py-3 text-on-accent sm:py-4"
     >
       <div className="marquee-track font-display text-2xl uppercase sm:text-4xl">
         {copy(true)}

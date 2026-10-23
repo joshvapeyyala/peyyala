@@ -17,7 +17,7 @@ export default async function HomePage() {
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pt-10 pb-12 sm:px-8 sm:pt-14 lg:px-10 lg:pt-16">
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold uppercase tracking-[0.14em] text-soft">
+        <p className="label flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold uppercase tracking-[0.14em] text-soft">
           <span className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-live" aria-hidden="true" />
             {profile.openToWorkLabel}
@@ -26,18 +26,18 @@ export default async function HomePage() {
           <span className="text-muted">{profile.location}</span>
         </p>
 
-        <h1 className="mt-6 font-display text-[clamp(3.5rem,15vw,10rem)] uppercase leading-[0.9] tracking-[-0.01em]">
+        <h1 className="hero-title mt-6 font-display text-[clamp(3.5rem,15vw,10rem)] uppercase leading-[0.9] tracking-[-0.01em]">
           I build{" "}
           <span
             aria-hidden="true"
-            className="relative inline-flex h-[0.72em] w-[1.45em] translate-y-[-0.06em] items-center justify-center overflow-hidden rounded-full border-2 border-edge bg-ink-2 align-middle"
+            className="hero-badge relative inline-flex h-[0.72em] w-[1.45em] translate-y-[-0.06em] items-center justify-center overflow-hidden rounded-full border-2 border-edge bg-ink-2 align-middle"
           >
             <span className="text-[0.3em] tracking-[0.04em] text-soft">JP</span>
           </span>
           <br />
           <span className="text-outline">backends</span>
           <br />
-          that <span className="text-accent">ship</span> real
+          that <span className="accent-tile text-accent">ship</span> real
           <br className="hidden sm:block" /> products.
         </h1>
 
@@ -80,7 +80,7 @@ export default async function HomePage() {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-20">
           <div>
             <SectionLabel>Experience</SectionLabel>
-            <p className="mt-4 font-display text-[clamp(5rem,16vw,11rem)] uppercase leading-[0.85]">
+            <p className="stat-title mt-4 font-display text-[clamp(5rem,16vw,11rem)] uppercase leading-[0.85]">
               {profile.yearsOfExperience}
               <span className="text-accent"> yrs</span>
             </p>

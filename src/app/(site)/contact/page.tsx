@@ -20,7 +20,7 @@ export default async function ContactPage() {
   return (
     <div className="mx-auto max-w-7xl px-5 pt-12 pb-20 sm:px-8 lg:px-10 lg:pt-16">
       <SectionLabel>Contact</SectionLabel>
-      <h1 className="mt-6 max-w-4xl text-[clamp(2.25rem,5vw,4.25rem)] font-semibold leading-[1.05] tracking-[-0.02em]">
+      <h1 className="statement mt-6 max-w-4xl text-[clamp(2.25rem,5vw,4.25rem)] font-semibold leading-[1.05] tracking-[-0.02em]">
         Hiring, or have a project in mind?{" "}
         <span className="text-muted">Tell me about it.</span>
       </h1>
@@ -29,7 +29,7 @@ export default async function ContactPage() {
         <ContactForm email={profile.email} />
 
         <aside className="flex flex-col gap-8">
-          <div className="rounded-3xl border border-line bg-ink-2 p-6 sm:p-7">
+          <div className="card rounded-3xl border border-line bg-ink-2 p-6 sm:p-7">
             <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.1em] text-live">
               <span className="blink" aria-hidden="true">●</span> {profile.openToWorkLabel}
             </p>

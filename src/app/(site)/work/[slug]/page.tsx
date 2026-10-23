@@ -76,7 +76,7 @@ async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
         </span>
         {project.category}
       </p>
-      <h1 className="mt-3 font-display text-[clamp(4.5rem,17vw,13rem)] uppercase leading-[0.85]">
+      <h1 className="mega-title mt-3 font-display text-[clamp(4.5rem,17vw,13rem)] uppercase leading-[0.85]">
         {project.name}
       </h1>
       <p className="mt-8 max-w-3xl text-xl leading-relaxed text-soft sm:text-2xl">
@@ -100,11 +100,11 @@ async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
           project={project}
           sizes="(min-width: 1280px) 1200px, 100vw"
           preload
-          className="rounded-3xl border border-line transition-colors group-hover:border-accent"
+          className="card rounded-3xl border border-line transition-colors group-hover:border-accent"
         />
       </a>
 
-      <dl className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-3">
+      <dl className="card mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-3">
         {facts.map((fact) => (
           <div key={fact.label} className="bg-ink p-6">
             <dt className="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">{fact.label}</dt>
@@ -169,7 +169,7 @@ async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
         </div>
       </div>
 
-      <nav aria-label="More projects" className="mt-24 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2">
+      <nav aria-label="More projects" className="card mt-24 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2">
         <Link href={`/work/${previous.slug}`} className="group bg-ink p-6 sm:p-8">
           <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">← Previous</span>
           <span className="mt-2 block font-display text-4xl uppercase transition-colors group-hover:text-accent sm:text-5xl">
