@@ -1,0 +1,23 @@
+# Local Postgres for development. Production uses RDS; only DATABASE_URL changes.
+#   docker compose up -d      start (data survives restarts in the named volume)
+#   docker compose down -v    stop and delete all local data
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: peyyala
+      POSTGRES_PASSWORD: peyyala
+      POSTGRES_DB: peyyala
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U peyyala -d peyyala"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  pgdata:
