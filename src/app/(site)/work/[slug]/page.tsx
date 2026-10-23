@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ButtonLink } from "@/components/site/button-link";
+import { ProjectShot } from "@/components/site/project-shot";
 import { SectionLabel } from "@/components/site/section-label";
 import { getProject, getProjects } from "@/lib/content";
 
@@ -78,7 +79,22 @@ async function CaseStudy({ params }: { params: Promise<{ slug: string }> }) {
         </ButtonLink>
       </div>
 
-      <dl className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-3">
+      <a
+        href={project.url}
+        target="_blank"
+        rel="noreferrer"
+        className="group mt-16 block"
+        aria-label={`Open ${project.urlLabel}`}
+      >
+        <ProjectShot
+          project={project}
+          sizes="(min-width: 1280px) 1200px, 100vw"
+          preload
+          className="rounded-3xl border border-line transition-colors group-hover:border-accent"
+        />
+      </a>
+
+      <dl className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-3">
         {facts.map((fact) => (
           <div key={fact.label} className="bg-ink p-6">
             <dt className="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">{fact.label}</dt>

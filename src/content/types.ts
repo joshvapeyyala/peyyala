@@ -18,6 +18,14 @@ export type Profile = {
 
 export type ProjectStatus = "live" | "in-progress" | "archived";
 
+// Paths are relative to /public; width and height are the file's pixel size
+export type Screenshot = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+};
+
 export type Project = {
   slug: string;
   name: string;
@@ -29,6 +37,7 @@ export type Project = {
   status: ProjectStatus;
   stack: string[];
   highlights: string[];
+  screenshot?: Screenshot;
 };
 
 export type Role = {

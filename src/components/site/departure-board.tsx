@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import type { Project } from "@/content/types";
+import { ProjectShot } from "./project-shot";
 
 type Props = {
   projects: Project[];
@@ -119,12 +120,7 @@ export function DepartureBoard({ projects, boardingLabel }: Props) {
       >
         {current && (
           <div className="overflow-hidden rounded-2xl border-2 border-accent bg-ink-2 shadow-[0_24px_60px_rgba(0,0,0,0.7)]">
-            <div className="flex items-center gap-1.5 border-b border-line px-3 py-2">
-              <span className="h-2 w-2 rounded-full bg-line" />
-              <span className="h-2 w-2 rounded-full bg-line" />
-              <span className="h-2 w-2 rounded-full bg-line" />
-              <span className="ml-2 truncate text-[11px] text-muted">{current.urlLabel}</span>
-            </div>
+            <ProjectShot project={current} sizes="288px" className="border-b border-line" />
             <div className="flex flex-col gap-3 p-5">
               <span className="font-display text-4xl uppercase leading-none">{current.name}</span>
               <span className="text-sm leading-snug text-soft">{current.summary}</span>

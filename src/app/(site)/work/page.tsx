@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ProjectShot } from "@/components/site/project-shot";
 import { SectionLabel } from "@/components/site/section-label";
 import { getProjects } from "@/lib/content";
 
@@ -37,21 +38,12 @@ export default async function WorkPage() {
                 </span>
                 <span className="font-bold uppercase tracking-[0.08em] text-live">● Live</span>
               </div>
-              {/* Stand-in until real screenshots are added (via the future admin) */}
-              <div className="flex aspect-[16/10] flex-col overflow-hidden rounded-2xl border border-line bg-ink" aria-hidden="true">
-                <div className="flex items-center gap-1.5 border-b border-line px-3 py-2">
-                  <span className="h-2 w-2 rounded-full bg-line" />
-                  <span className="h-2 w-2 rounded-full bg-line" />
-                  <span className="h-2 w-2 rounded-full bg-line" />
-                  <span className="ml-2 truncate text-[11px] text-muted">{project.urlLabel}</span>
-                </div>
-                <div className="relative flex flex-1 items-center justify-center overflow-hidden">
-                  <span className="text-outline font-display text-[clamp(3rem,9vw,5.5rem)] uppercase leading-none opacity-60 transition group-hover:opacity-100">
-                    {project.name}
-                  </span>
-                  <span className="absolute bottom-0 left-0 h-1 w-1/3 bg-accent transition-all duration-500 group-hover:w-full" />
-                </div>
-              </div>
+              <ProjectShot
+                project={project}
+                sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw"
+                preload={index === 0}
+                className="rounded-2xl border border-line"
+              />
               <div className="flex flex-col gap-2">
                 <h2 className="font-display text-5xl uppercase leading-none transition-colors group-hover:text-accent">
                   {project.name}

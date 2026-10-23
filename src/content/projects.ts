@@ -11,6 +11,12 @@ export const projects: Project[] = [
     url: "https://caredeck.in",
     urlLabel: "caredeck.in",
     status: "live",
+    screenshot: {
+      src: "/work/caredeck.png",
+      width: 1440,
+      height: 900,
+      alt: "CareDeck landing page: \"Booking to invoice, nobody types anything twice.\"",
+    },
     stack: [
       "Next.js",
       "TypeScript",
@@ -36,6 +42,12 @@ export const projects: Project[] = [
     url: "https://xpensefy.vercel.app",
     urlLabel: "xpensefy.vercel.app",
     status: "live",
+    screenshot: {
+      src: "/work/xpensefy.png",
+      width: 1440,
+      height: 900,
+      alt: "Xpensefy landing page with a monthly spending card showing budget pacing",
+    },
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL", "Prisma ORM"],
     highlights: [
       "Built a mobile-first expense tracker with category-based budgets, monthly pacing insights and auto-categorization of expenses by merchant name.",
@@ -49,9 +61,15 @@ export const projects: Project[] = [
     summary:
       "An invite-only family tree that models multi-generation relationships and works out how any two people are related.",
     role: "Solo developer",
-    url: "https://lineage-silk.vercel.app",
-    urlLabel: "lineage-silk.vercel.app",
+    url: "https://lineage-family.vercel.app",
+    urlLabel: "lineage-family.vercel.app",
     status: "live",
+    screenshot: {
+      src: "/work/lineage.png",
+      width: 1440,
+      height: 900,
+      alt: "Lineage landing page with a sample three-generation family tree card",
+    },
     stack: [
       "Next.js",
       "TypeScript",
