@@ -1,9 +1,9 @@
 // Shared pieces for the generated icons and link-preview images (next/og).
 // next/og can't read next/font's woff2 files, so Anton ships as a TTF.
 import { readFileSync } from "node:fs";
-import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getTheme } from "@/lib/content";
+import { readUrl as readStored } from "@/server/storage";
 
 // Colours follow the admin's chosen palette (Appearance, stored in site_settings)
 export async function themeColors() {
@@ -46,8 +46,12 @@ export function displayCase(text: string, type: { uppercase: boolean }) {
   return type.uppercase ? text.toUpperCase() : text;
 }
 
-// Reads an image from /public as a data URL for <img> inside ImageResponse
-export async function publicImage(src: string) {
-  const data = await readFile(join(process.cwd(), "public", src), "base64");
-  return `data:image/png;base64,${data}`;
+const drawableTypes: Record<string, string> = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg" };
+
+// An image (in /public, or uploaded) as a data URL for <img> inside
+// ImageResponse. Null when it's missing, or WebP, which ImageResponse can't draw.
+export async function imageDataUrl(src: string) {
+  const type = drawableTypes[src.split(".").pop()?.toLowerCase() ?? ""];
+  const bytes = type ? await readStored(src) : null;
+  return bytes ? `data:${type};base64,${Buffer.from(bytes).toString("base64")}` : null;
 }

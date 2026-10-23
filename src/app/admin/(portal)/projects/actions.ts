@@ -4,12 +4,14 @@ import { and, eq, max, ne } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import type { CaseStudy } from "@/content/types";
+import type { CaseStudy, Screenshot } from "@/content/types";
 import { contentTags } from "@/lib/content";
 import { failed, invalid, projectSchema, type ProjectInput, type SaveResult } from "@/lib/schemas";
 import { requireAdmin } from "@/server/auth";
 import { db } from "@/server/db/client";
 import * as t from "@/server/db/schema";
+import * as storage from "@/server/storage";
+import { checkImage } from "@/server/uploads";
 
 const slugTaken = () => failed("Couldn't save: another project uses this slug.", { slug: "Another project already uses this slug." });
 
@@ -86,11 +88,52 @@ export async function deleteProject(slug: string): Promise<SaveResult> {
   await requireAdmin();
   if (typeof slug !== "string") return failed("Couldn't delete this project.");
 
-  const deleted = await db.delete(t.projects).where(eq(t.projects.slug, slug)).returning({ id: t.projects.id });
-  if (!deleted.length) return failed("This project was already deleted.");
+  const [deleted] = await db.delete(t.projects).where(eq(t.projects.slug, slug)).returning({ screenshot: t.projects.screenshot });
+  if (!deleted) return failed("This project was already deleted.");
+  await storage.remove(deleted.screenshot?.src);
 
   updateTag(contentTags.projects);
   redirect("/admin/projects");
+}
+
+// Replaces the project's screenshot with the uploaded image (FormData "file").
+// Width and height come from the image itself. The alt text stays, or is
+// taken from the form ("alt") when the project had no screenshot yet.
+export async function uploadScreenshot(slug: string, formData: FormData): Promise<SaveResult<Screenshot>> {
+  await requireAdmin();
+  const image = await checkImage(formData.get("file"));
+  if (!image.ok) return failed(image.message);
+
+  const [project] = await db.select({ name: t.projects.name, screenshot: t.projects.screenshot }).from(t.projects).where(eq(t.projects.slug, String(slug)));
+  if (!project) return failed("This project no longer exists. It may have been deleted in another tab.");
+
+  const { bytes, width, height, extension } = image.file;
+  const src = await storage.put("screenshots", bytes, `${slug}.${extension}`);
+  const typedAlt = String(formData.get("alt") ?? "").trim().slice(0, 200);
+  const screenshot: Screenshot = { src, width, height, alt: project.screenshot?.alt || typedAlt || `The ${project.name} website` };
+  try {
+    await db.update(t.projects).set({ screenshot }).where(eq(t.projects.slug, slug));
+  } catch (error) {
+    await storage.remove(src);
+    throw error;
+  }
+  // Only once the new one is saved; the same image uploaded again keeps its URL
+  if (project.screenshot?.src !== src) await storage.remove(project.screenshot?.src);
+
+  updateTag(contentTags.projects);
+  return { ok: true, value: screenshot };
+}
+
+export async function removeScreenshot(slug: string): Promise<SaveResult> {
+  await requireAdmin();
+  const [project] = await db.select({ screenshot: t.projects.screenshot }).from(t.projects).where(eq(t.projects.slug, String(slug)));
+  if (!project) return failed("This project no longer exists. It may have been deleted in another tab.");
+
+  await db.update(t.projects).set({ screenshot: null }).where(eq(t.projects.slug, slug));
+  await storage.remove(project.screenshot?.src);
+
+  updateTag(contentTags.projects);
+  return { ok: true };
 }
 
 // The form edits every case-study part; the database stores only the parts

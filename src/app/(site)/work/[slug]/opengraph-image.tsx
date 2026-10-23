@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getProject, getProjects } from "@/lib/content";
-import { displayCase, displayType, publicImage, themeColors } from "@/lib/og";
+import { displayCase, displayType, imageDataUrl, themeColors } from "@/lib/og";
 
 export const alt = "Project case study by Joshva Peyyala";
 export const size = { width: 1200, height: 630 };
@@ -25,7 +25,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ slu
     );
   }
 
-  const shot = project.screenshot ? await publicImage(project.screenshot.src) : null;
+  const shot = project.screenshot ? await imageDataUrl(project.screenshot.src) : null;
 
   return new ImageResponse(
     (

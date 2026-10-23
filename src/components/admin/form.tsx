@@ -2,15 +2,15 @@
 
 import { unstable_rethrow } from "next/navigation";
 import { useEffect, useEffectEvent, useId, useState, useTransition, type ComponentProps } from "react";
-import type { FieldErrors, SaveResult } from "@/lib/schemas";
+import { maxUploadBytes, type FieldErrors, type SaveResult } from "@/lib/schemas";
 import { LeaveGuard } from "./leave-guard";
-import { Button, sectionId } from "./ui";
+import { Button, buttonBase, buttonStyles, sectionId } from "./ui";
 
 // Form controls for the admin. Each screen keeps all its values in one piece
 // of React state (useEditor) and sends it whole to its server action on save.
 
 const control =
-  "w-full rounded-lg border border-border-strong bg-panel px-3 text-sm text-fg placeholder:text-muted/70 transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 aria-[invalid=true]:border-danger aria-[invalid=true]:focus:ring-danger/20";
+  "w-full rounded-lg border border-border-strong bg-panel px-3 text-sm text-fg placeholder:text-muted/70 transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 aria-invalid:border-danger aria-invalid:focus:ring-danger/20";
 
 // ---- Editor state ----
 
@@ -93,6 +93,17 @@ export function useEditor<T>(initial: T, save: (value: T) => Promise<SaveResult<
     discard() {
       setValue(saved);
       setFailure(null);
+    },
+    // The server now holds these values (e.g. after an upload). Fields still
+    // showing the old saved value take the new one; edits in progress stay.
+    rebase(patch: Partial<T>) {
+      const next = { ...saved, ...patch };
+      setSaved(next);
+      setValue((current) => {
+        const merged = { ...current };
+        for (const key of Object.keys(patch) as (keyof T)[]) if (isEqual(current[key], saved[key])) merged[key] = next[key];
+        return merged;
+      });
     },
     errorAt,
     errorWithin,
@@ -258,7 +269,7 @@ export function TagField({ label, hint, error, value, onChange }: { label: strin
   return (
     <Field label={label} hint={hint ?? "Press Enter to add."} error={error}>
       {(field) => (
-        <div className={`${control} flex min-h-9 flex-wrap items-center gap-1.5 py-1.5 has-[[aria-invalid=true]]:border-danger`}>
+        <div className={`${control} flex min-h-9 flex-wrap items-center gap-1.5 py-1.5 has-aria-invalid:border-danger`}>
           {value.map((tag) => (
             <span key={tag} className="inline-flex items-center gap-1 rounded-md bg-sunken py-0.5 pr-1 pl-2 text-xs">
               {tag}
@@ -379,6 +390,76 @@ export function ListField<T>({
       >
         + {addLabel}
       </Button>
+    </div>
+  );
+}
+
+// Picks a file and sends it straight to `upload` (a server action taking
+// FormData with "file"), separately from the screen's Save
+export function UploadButton<T>({
+  label,
+  accept,
+  hint,
+  upload,
+  onUploaded,
+}: {
+  label: string;
+  accept: string;
+  hint?: string;
+  upload: (formData: FormData) => Promise<SaveResult<T>>;
+  onUploaded?: (value: T | undefined) => void;
+}) {
+  const id = useId();
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  function send(file: File) {
+    // Checked again on the server; this just answers big files without sending them
+    if (file.size > maxUploadBytes) return setError(`That file is over ${maxUploadBytes / 1024 / 1024} MB.`);
+    const formData = new FormData();
+    formData.set("file", file);
+    setError(null);
+    startTransition(async () => {
+      let result: SaveResult<T>;
+      try {
+        result = await upload(formData);
+      } catch (error) {
+        unstable_rethrow(error);
+        result = { ok: false, message: "The upload didn't go through. Check your connection and try again.", errors: {} };
+      }
+      if (result.ok) onUploaded?.(result.value);
+      else setError(result.message);
+    });
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <label
+        htmlFor={id}
+        className={`${buttonBase} ${buttonStyles.secondary} cursor-pointer has-[:disabled]:cursor-wait has-[:disabled]:opacity-60 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary/40`}
+      >
+        {pending ? "Uploading…" : label}
+        <input
+          id={id}
+          type="file"
+          accept={accept}
+          disabled={pending}
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            // Lets the same file be picked again after an error
+            event.target.value = "";
+            if (file) send(file);
+          }}
+          className="sr-only"
+        />
+      </label>
+      {error ? (
+        <p role="alert" className="text-sm font-medium text-danger">
+          {error}
+        </p>
+      ) : (
+        hint && <p className="text-xs text-muted">{hint}</p>
+      )}
     </div>
   );
 }

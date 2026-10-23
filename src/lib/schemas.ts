@@ -29,6 +29,7 @@ const paragraphs = z
   .transform((list) => list.filter(Boolean));
 
 // ---- Profile & resume ----
+// The resume PDF isn't part of this: it changes only by uploading a new file.
 
 export const profileSchema = z.object({
   firstName: required(40),
@@ -43,10 +44,6 @@ export const profileSchema = z.object({
   email: z.string().trim().pipe(z.email("Enter a valid email address.")),
   linkedin: webUrl,
   github: webUrl,
-  resumePdf: z
-    .string()
-    .trim()
-    .regex(/^\/[^\s?#]+\.pdf$/i, "A PDF in /public, written like /Resume.pdf"),
   learning: tags,
   techStrip: tags,
   experience: z
@@ -117,6 +114,11 @@ export const projectSchema = z.object({
 });
 
 export type ProjectInput = z.output<typeof projectSchema>;
+
+// ---- Uploads ----
+
+// Screenshots and the resume PDF. next.config's serverActions.bodySizeLimit leaves room above this.
+export const maxUploadBytes = 5 * 1024 * 1024;
 
 // ---- Results ----
 

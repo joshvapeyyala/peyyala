@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
-import { deleteProject, saveProject } from "@/app/admin/(portal)/projects/actions";
+import { deleteProject, removeScreenshot, saveProject, uploadScreenshot } from "@/app/admin/(portal)/projects/actions";
 import type { Project } from "@/content/types";
 import type { ProjectInput } from "@/lib/schemas";
-import { EditForm, LinesField, ListField, SelectField, TagField, TextAreaField, TextField, useEditor } from "./form";
+import { EditForm, LinesField, ListField, SelectField, TagField, TextAreaField, TextField, UploadButton, useEditor } from "./form";
 import { statusOptions } from "./options";
 import { Button, Section } from "./ui";
 
@@ -121,13 +121,24 @@ export function ProjectForm({ project }: { project?: Project }) {
         ) : (
           <div className="rounded-lg border border-dashed border-border-strong px-4 py-10 text-center text-sm text-muted">No screenshot yet.</div>
         )}
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="inline-flex h-9 cursor-not-allowed items-center rounded-lg border border-border-strong px-3.5 text-sm font-medium opacity-50">
-            Upload image
-            <input type="file" accept="image/*" disabled className="sr-only" />
-          </label>
-          <p className="text-xs text-muted">Uploads arrive in the next step.</p>
-        </div>
+        {project ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <UploadButton
+              label={project.screenshot ? "Replace image" : "Upload image"}
+              accept="image/png,image/jpeg,image/webp"
+              hint="PNG, JPEG or WebP, up to 5 MB. A wide landing-page shot works best."
+              upload={(formData) => {
+                // Used as the alt text if the project has none yet
+                formData.set("alt", value.screenshotAlt);
+                return uploadScreenshot(project.slug, formData);
+              }}
+              onUploaded={(screenshot) => screenshot && editor.rebase({ screenshotAlt: screenshot.alt })}
+            />
+            {project.screenshot && <RemoveScreenshot slug={project.slug} />}
+          </div>
+        ) : (
+          <p className="text-sm text-muted">Create the project first, then add its screenshot.</p>
+        )}
       </Section>
 
       <Section title="Stack & highlights">
@@ -164,6 +175,30 @@ export function ProjectForm({ project }: { project?: Project }) {
 
       {project && <DangerZone project={project} />}
     </EditForm>
+  );
+}
+
+// Takes the screenshot off the project; uploading again brings one back
+function RemoveScreenshot({ slug }: { slug: string }) {
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  return (
+    <>
+      <Button
+        variant="ghost"
+        disabled={pending}
+        onClick={() =>
+          startTransition(async () => {
+            const result = await removeScreenshot(slug);
+            setError(result.ok ? null : result.message);
+          })
+        }
+      >
+        {pending ? "Removing…" : "Remove image"}
+      </Button>
+      {error && <p className="text-sm text-danger">{error}</p>}
+    </>
   );
 }
 

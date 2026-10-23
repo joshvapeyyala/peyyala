@@ -1,20 +1,30 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/admin/page-header";
 import { statusOptions } from "@/components/admin/options";
 import { Badge, ButtonLink, Card, buttonBase, buttonStyles, sectionId } from "@/components/admin/ui";
 import { designs } from "@/content/themes";
-import { getProfile, getProjects, getServices, getTheme } from "@/lib/content";
+import { cacheLife, cacheTag } from "next/cache";
+import { contentTags, getProfile, getProjects, getServices, getTheme } from "@/lib/content";
+import { fileExists } from "@/server/storage";
 
 // absolute: the layout's "%s — Admin" template only applies to child segments
 export const metadata: Metadata = { title: { absolute: "Dashboard — Admin" } };
 
 type Check = { done: boolean; text: string; href: string };
 
+// Cached with the profile: the file only changes through the resume upload,
+// which refreshes the profile tag
+async function resumeExists(url: string) {
+  "use cache";
+  cacheTag(contentTags.profile);
+  cacheLife("max");
+  return fileExists(url);
+}
+
 export default async function DashboardPage() {
   const [profile, projects, { services }, theme] = await Promise.all([getProfile(), getProjects(), getServices(), getTheme()]);
+  const hasResume = await resumeExists(profile.resumePdf);
   const live = projects.filter((project) => project.status === "live").length;
 
   // Content the site looks thin without. Links go straight to the field to fix.
@@ -30,9 +40,9 @@ export default async function DashboardPage() {
       href: `/admin/projects/${project.slug}#${sectionId("Case study")}`,
     })),
     {
-      done: existsSync(path.join(process.cwd(), "public", profile.resumePdf)),
-      text: `Resume PDF in /public (${profile.resumePdf})`,
-      href: `/admin/profile#${sectionId("Contact & links")}`,
+      done: hasResume,
+      text: "Resume PDF",
+      href: `/admin/profile#${sectionId("Resume PDF")}`,
     },
     { done: services.length > 0, text: "At least one service", href: "/admin/services" },
   ];

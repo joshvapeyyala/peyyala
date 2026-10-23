@@ -1,9 +1,9 @@
 "use client";
 
-import { saveProfile } from "@/app/admin/(portal)/profile/actions";
+import { saveProfile, uploadResume } from "@/app/admin/(portal)/profile/actions";
 import type { Education, Job, Profile, SkillGroup } from "@/content/types";
 import type { ProfileInput } from "@/lib/schemas";
-import { EditForm, LinesField, ListField, TagField, TextAreaField, TextField, Toggle, useEditor } from "./form";
+import { EditForm, LinesField, ListField, TagField, TextAreaField, TextField, Toggle, UploadButton, useEditor } from "./form";
 import { Section } from "./ui";
 
 type Props = {
@@ -29,7 +29,6 @@ export function ProfileForm({ profile, experience, skills, marquee, education }:
       email: profile.email,
       linkedin: profile.linkedin,
       github: profile.github,
-      resumePdf: profile.resumePdf,
       learning: profile.learning,
       techStrip: marquee,
       experience,
@@ -40,14 +39,14 @@ export function ProfileForm({ profile, experience, skills, marquee, education }:
   );
   const { value, update, errorAt, errorWithin } = editor;
   // Props for a plain text field bound to one profile value
-  const bind = (key: "firstName" | "lastName" | "title" | "tagline" | "summary" | "location" | "yearsOfExperience" | "openToWorkLabel" | "email" | "linkedin" | "github" | "resumePdf") => ({
+  const bind = (key: "firstName" | "lastName" | "title" | "tagline" | "summary" | "location" | "yearsOfExperience" | "openToWorkLabel" | "email" | "linkedin" | "github") => ({
     value: value[key],
     onChange: (text: string) => update({ [key]: text } as Partial<ProfileInput>),
     error: errorAt(key),
   });
 
   return (
-    <EditForm editor={editor} sections={["About you", "Availability", "Contact & links", "Experience", "Skills", "Education"]}>
+    <EditForm editor={editor} sections={["About you", "Availability", "Contact & links", "Resume PDF", "Experience", "Skills", "Education"]}>
       <Section title="About you" description="Your name and headline appear in the header, the home page and the resume.">
         <div className="grid gap-5 sm:grid-cols-2">
           <TextField label="First name" {...bind("firstName")} />
@@ -70,8 +69,15 @@ export function ProfileForm({ profile, experience, skills, marquee, education }:
           <TextField label="Email" type="email" {...bind("email")} />
           <TextField label="LinkedIn URL" type="url" {...bind("linkedin")} />
           <TextField label="GitHub URL" type="url" {...bind("github")} />
-          <TextField label="Resume PDF" {...bind("resumePdf")} hint="File in /public, e.g. /Joshva_Peyyala_Resume.pdf" />
         </div>
+      </Section>
+
+      <Section title="Resume PDF" description="The file behind the Download resume buttons. Uploading replaces it on the site straight away.">
+        {/* Plain <a>: a file, not an admin page */}
+        <a href={profile.resumePdf} target="_blank" rel="noreferrer" className="self-start text-sm font-medium text-primary hover:underline">
+          {profile.resumePdf.split("/").pop()} ↗
+        </a>
+        <UploadButton label="Replace PDF" accept="application/pdf" hint="A PDF up to 5 MB. Downloads keep its file name." upload={uploadResume} />
       </Section>
 
       <Section title="Experience" description="Each company holds one or more roles, newest first.">
