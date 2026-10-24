@@ -99,5 +99,5 @@ content: `pnpm db:seed`.
 - [x] Migrate script written; `pnpm db:migrate` uses it
 - [x] Checked: up to date, fresh database, SSL failure, password failure,
       all-or-nothing on a broken migration
-- [ ] Backup-before-migrate in the deploy script (item 6)
+- [x] Backup-before-migrate in the deploy script (item 6), tested
 - [ ] First migration on RDS (Phase E)

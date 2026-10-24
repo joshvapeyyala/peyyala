@@ -71,7 +71,7 @@ To repeat the failure test: `docker pause peyyala-db-1`, open
 
 - [x] `/api/health` written: database check, commit, 3-second limit, no caching
 - [x] OK and failure answers checked on the laptop
-- [ ] Not prerendered in a production build: check with `pnpm build` (the
-      route list should show `/api/health` as dynamic, `ƒ`)
+- [x] Not prerendered in a production build: the route list shows
+      `/api/health` as dynamic (`ƒ`) (checked during the item 6 tests)
 - [ ] Checked on peyyala.com after the first deploy (Phase E)
 - [ ] UptimeRobot monitor set up (Phase G)
