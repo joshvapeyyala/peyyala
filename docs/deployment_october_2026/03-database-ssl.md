@@ -39,8 +39,8 @@ So with these settings the app never falls back to an unencrypted
 connection. `pg` loads the certificate and keeps checking switched on, with
 no security warnings.
 
-`drizzle-kit migrate` also refused, but printed no reason. That's handled in
-item 5 (migrations).
+`drizzle-kit migrate` also refused, but printed no reason. Item 5 replaced it
+with a migrate script that does print it (see 05-migrations.md).
 
 ## The production address
 
