@@ -84,8 +84,9 @@ Never committed, never on the laptop.
       with what should be live: the server deploys `main`.
 
 ### Phase B: AWS foundation (console steps come with the phase)
-- [ ] Budget alert (80% of a monthly budget, by email)
-- [ ] Key pair `shared-web-key`, kept safe on the laptop
+- [x] Account secured: MFA on root, admin user `joshva-admin` with MFA ([phase-b-00](phase-b-00-secure-account.md))
+- [x] Budget alert exists at $25; raise it later to fit the setup ([phase-b-01](phase-b-01-budget.md))
+- [ ] Key pair `shared-web-key`, kept safe on the laptop ([phase-b-02](phase-b-02-key-pair.md))
 - [ ] Security groups `shared-web-sg` (80, 443 open; 22 key-only) and `shared-db-sg` (5432 from `shared-web-sg` only)
 - [ ] EC2 `shared-web-1`: Ubuntu 24.04, t3a.medium, 30 GB gp3, IMDSv2 required, Elastic IP
 - [ ] RDS `shared-db-1`: PostgreSQL 17, db.t4g.micro, 20 GB gp3, private, encrypted, 7-day backups, deletion protection. Leave `rds.force_ssl` on. [03](03-database-ssl.md)
@@ -130,6 +131,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [ ] Move each project (own user, folder, database and login, buckets, IAM user, Caddy site, PM2 app, port)
 - [ ] Final snapshot of the old RDS and backup of the old EC2, then delete the old resources
 - [ ] Check billing the week after
+- [ ] Lower the budget to about $70 ([phase-b-01](phase-b-01-budget.md))
 
 ## Everyday commands
 
