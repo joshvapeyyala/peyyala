@@ -86,8 +86,8 @@ Never committed, never on the laptop.
 ### Phase B: AWS foundation (console steps come with the phase)
 - [x] Account secured: MFA on root, admin user `joshva-admin` with MFA ([phase-b-00](phase-b-00-secure-account.md))
 - [x] Budget alert exists at $25; raise it later to fit the setup ([phase-b-01](phase-b-01-budget.md))
-- [ ] Key pair `shared-web-key`, kept safe on the laptop ([phase-b-02](phase-b-02-key-pair.md))
-- [ ] Security groups `shared-web-sg` (80, 443 open; 22 key-only) and `shared-db-sg` (5432 from `shared-web-sg` only)
+- [x] Key pair `shared-web-key`, kept safe on the laptop and backed up ([phase-b-02](phase-b-02-key-pair.md))
+- [ ] Security groups `shared-web-sg` (80, 443 open; 22 key-only) and `shared-db-sg` (5432 from `shared-web-sg` only) ([phase-b-03](phase-b-03-security-groups.md))
 - [ ] EC2 `shared-web-1`: Ubuntu 24.04, t3a.medium, 30 GB gp3, IMDSv2 required, Elastic IP
 - [ ] RDS `shared-db-1`: PostgreSQL 17, db.t4g.micro, 20 GB gp3, private, encrypted, 7-day backups, deletion protection. Leave `rds.force_ssl` on. [03](03-database-ssl.md)
 - [ ] S3 `joshua-portfolio-prod` + IAM user `joshua-portfolio-prod-app` + its key. Same steps as dev, in [02](02-s3-storage.md)

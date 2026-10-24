@@ -68,7 +68,9 @@ the console.
 
 ## Status
 
-- [ ] `shared-web-key` created (ED25519, .pem)
-- [ ] File in `C:\Users\<you>\.ssh\`, readable by you only
-- [ ] Backed up in the password manager
-- [ ] No copy left in Downloads
+- [x] `shared-web-key` created (ED25519, .pem). Fingerprint
+      `SHA256:MpA60Hcba2W0BbLNGe/URvIRu+RaXpBgRLvmV65p0sw`: compare with
+      the one the EC2 console shows under Key Pairs
+- [x] File in `C:\Users\J\.ssh\shared-web-key.pem`, readable by your user only
+- [x] Backed up in the password manager
+- [x] No copy left in Downloads
