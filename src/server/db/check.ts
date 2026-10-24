@@ -16,8 +16,11 @@ async function check() {
   const client = new Client({ connectionString: url, connectionTimeoutMillis: 5000 });
   try {
     await client.connect();
-  } catch {
-    return fail(`Can't reach the database at ${where}. Locally, start it with "pnpm db:up".`);
+  } catch (error) {
+    // The reason matters on the server (SSL, certificate, network), so show it
+    const reason = error instanceof Error ? error.message : String(error);
+    const hint = hostname === "localhost" ? ` Locally, start it with "pnpm db:up".` : "";
+    return fail(`Can't reach the database at ${where}: ${reason}.${hint}`);
   }
 
   try {
