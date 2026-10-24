@@ -80,8 +80,8 @@ Never committed, never on the laptop.
 ## What's left for you
 
 ### Before the first deploy
-- [ ] Merge `dev` into `main` and push. `main` is still the blank starter
-      app, and the server deploys `main`.
+- [x] Merge `dev` into `main` and push (2026-10-25). Keep `main` up to date
+      with what should be live: the server deploys `main`.
 
 ### Phase B: AWS foundation (console steps come with the phase)
 - [ ] Budget alert (80% of a monthly budget, by email)
