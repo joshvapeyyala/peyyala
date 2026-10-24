@@ -1,0 +1,152 @@
+# Deploying peyyala.com to AWS (October 2026)
+
+The starting point for the move to AWS. Each Phase A item has its own doc
+(why, what changed, tests, what to do). This page ties them together: the
+picture, the production settings in one place, what's left to do and the
+everyday commands.
+
+## The setup
+
+```
+                     Cloudflare DNS (grey cloud: DNS only)
+                     peyyala.com · www.peyyala.com · other projects
+                                     │
+                                     ▼
+┌──────────── EC2 "shared-web-1" (Mumbai, Ubuntu 24.04, t3a.medium) ────────────┐
+│  Caddy: HTTPS for every domain                                                │
+│    peyyala.com      → 127.0.0.1:3001  PM2 "peyyala-prod" (one process)        │
+│    www.peyyala.com  → redirect to peyyala.com                                 │
+│    other projects   → their own ports and PM2 apps                            │
+│  /srv/peyyala/prod: releases/, current, .env, backups/, deploy.sh             │
+└──────┬─────────────────────────────┬──────────────────────────────────────────┘
+       │ private network, TLS        │ HTTPS
+       ▼                             ▼
+RDS "shared-db-1" (Postgres 17)   S3                              Brevo
+  peyyala_prod (own login)          joshua-portfolio-prod (live)   notification
+  other projects' databases         joshua-portfolio-dev (laptop)  emails
+                                    shared-db-backups (nightly)
+```
+
+| | Laptop | Live |
+|---|---|---|
+| Address | `localhost:3000` | `https://peyyala.com` |
+| Database | Docker | RDS `peyyala_prod` |
+| Uploads | `joshua-portfolio-dev` | `joshua-portfolio-prod` |
+| Email | printed in the terminal | Brevo |
+| Deployed from | not deployed | `main` |
+
+## Phase A: code preparation
+
+| # | Item | Doc | Status |
+|---|------|-----|--------|
+| 1 | Brevo email driver | [01-brevo-email.md](01-brevo-email.md) | done; real test email pending Brevo setup |
+| 2 | S3 storage driver | [02-s3-storage.md](02-s3-storage.md) | done, tested on the dev bucket |
+| 3 | Encrypted database connection | [03-database-ssl.md](03-database-ssl.md) | done, tested locally |
+| 4 | Health check `/api/health` | [04-health-check.md](04-health-check.md) | done, tested |
+| 5 | Migrations (`pnpm db:migrate`) | [05-migrations.md](05-migrations.md) | done, tested |
+| 6 | Deploy script | [06-deploy-script.md](06-deploy-script.md) | done, tested in a server-like container |
+| 7 | PM2 config | [07-pm2-config.md](07-pm2-config.md) | done, tested in a server-like container |
+| 8 | Documentation | this page and the root `README.md` | done |
+
+Also changed along the way: Resend removed, the local uploads folder and the
+automated tests removed (tests to be rewritten), `.gitattributes` added.
+
+## The production `.env`
+
+`/srv/peyyala/prod/.env` on the server, owned by `peyyala`, `chmod 600`.
+Never committed, never on the laptop.
+
+| Setting | Value | Where it comes from |
+|---|---|---|
+| `DATABASE_URL` | `postgres://peyyala_prod:<password>@<rds-endpoint>:5432/peyyala_prod?sslmode=verify-full&sslrootcert=/srv/shared/rds-ca.pem` | Phase C, when the database and login are created. Password of letters and digits only. [03](03-database-ssl.md) |
+| `BETTER_AUTH_SECRET` | a **new** random string, not the laptop's | `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"` |
+| `BETTER_AUTH_URL` | `https://peyyala.com` | |
+| `GOOGLE_CLIENT_ID` | same OAuth client as the laptop | Google Cloud Console (Phase D adds the live addresses) |
+| `GOOGLE_CLIENT_SECRET` | same OAuth client as the laptop | Google Cloud Console |
+| `ADMIN_EMAIL` | your Google address | |
+| `S3_BUCKET` | `joshua-portfolio-prod` | [02](02-s3-storage.md) |
+| `S3_REGION` | `ap-south-1` | |
+| `S3_ACCESS_KEY_ID` | key of `joshua-portfolio-prod-app` | Phase B, IAM |
+| `S3_SECRET_ACCESS_KEY` | secret of `joshua-portfolio-prod-app` | Phase B, IAM |
+| `STORAGE_PUBLIC_URL` | `https://joshua-portfolio-prod.s3.ap-south-1.amazonaws.com` | |
+| `MAIL_DRIVER` | `brevo` | [01](01-brevo-email.md) |
+| `MAIL_TO` | empty (means `ADMIN_EMAIL`) | |
+| `MAIL_FROM` | `Peyyala <notifications@peyyala.com>` | Phase D, Brevo sender |
+| `BREVO_API_KEY` | the `peyyala-prod` key | Phase D, Brevo |
+| `TRUSTED_PROXIES` | `1` (Caddy) | Becomes `2` if Cloudflare's proxy (orange cloud) is ever switched on |
+
+`NODE_ENV` and the port come from `ecosystem.config.cjs`, not the `.env`.
+
+## What's left for you
+
+### Before the first deploy
+- [ ] Merge `dev` into `main` and push. `main` is still the blank starter
+      app, and the server deploys `main`.
+
+### Phase B: AWS foundation (console steps come with the phase)
+- [ ] Budget alert (80% of a monthly budget, by email)
+- [ ] Key pair `shared-web-key`, kept safe on the laptop
+- [ ] Security groups `shared-web-sg` (80, 443 open; 22 key-only) and `shared-db-sg` (5432 from `shared-web-sg` only)
+- [ ] EC2 `shared-web-1`: Ubuntu 24.04, t3a.medium, 30 GB gp3, IMDSv2 required, Elastic IP
+- [ ] RDS `shared-db-1`: PostgreSQL 17, db.t4g.micro, 20 GB gp3, private, encrypted, 7-day backups, deletion protection. Leave `rds.force_ssl` on. [03](03-database-ssl.md)
+- [ ] S3 `joshua-portfolio-prod` + IAM user `joshua-portfolio-prod-app` + its key. Same steps as dev, in [02](02-s3-storage.md)
+- [ ] S3 `shared-db-backups` (private, 30-day delete rule) + IAM user `shared-backup`
+
+### Phase C: server setup (one script, from me)
+Covers: updates, swap, fail2ban, Node 22, pnpm, PM2, Caddy, **PostgreSQL 17
+client tools** ([06](06-deploy-script.md)), the `peyyala` user and folders,
+RDS certificate ([03](03-database-ssl.md)), databases and logins, nightly
+backups, the Caddy site, PM2 log rotation and start-at-boot
+([07](07-pm2-config.md)), and the first copy of `deploy.sh`.
+
+### Phase D: domain, email, sign-in
+- [x] peyyala.com bought at Cloudflare
+- [ ] Cloudflare DNS (grey cloud): `peyyala.com` A → Elastic IP, `www` CNAME → `peyyala.com`
+- [ ] Brevo: authenticate peyyala.com, add sender `notifications@peyyala.com`, create keys `peyyala-local-test` and `peyyala-prod` ([01](01-brevo-email.md))
+- [ ] Google OAuth client: add origin `https://peyyala.com` and redirect URI `https://peyyala.com/api/auth/callback/google`
+
+### Phase E: first deploy
+- [ ] Create the production `.env` (table above)
+- [ ] `deploy.sh`: first run migrates and loads the starting content ([06](06-deploy-script.md))
+- [ ] `https://peyyala.com/api/health` shows the latest commit on `main` ([04](04-health-check.md))
+- [ ] Database connection encrypted: `ssl = t` ([03](03-database-ssl.md))
+- [ ] Google sign-in works; an admin save shows on the site immediately
+- [ ] Upload the real screenshots and resume in the live admin ([02](02-s3-storage.md))
+- [ ] Contact form message arrives by email; Reply goes to the visitor ([01](01-brevo-email.md))
+- [ ] Security headers present (e.g. `curl -I https://peyyala.com`)
+- [ ] Reboot the server once; the site comes back by itself ([07](07-pm2-config.md))
+- [ ] Remove "(launching soon)" from the root `README.md`
+
+### Phase F: automatic deploys
+- [ ] GitHub Actions: on push to `main`, run lint and type-check, then SSH in and run `deploy.sh`
+- [ ] Secrets in GitHub: deploy SSH key (not your personal one), server address, known-hosts entry
+
+### Phase G: operations
+- [ ] UptimeRobot on `https://peyyala.com/api/health`, every 5 minutes ([04](04-health-check.md))
+- [ ] Test a restore once, from a nightly dump into a scratch database ([06](06-deploy-script.md))
+- [ ] Monthly: check the AWS bill against the budget
+
+### Phase H: other projects, then clean up
+- [ ] Move each project (own user, folder, database and login, buckets, IAM user, Caddy site, PM2 app, port)
+- [ ] Final snapshot of the old RDS and backup of the old EC2, then delete the old resources
+- [ ] Check billing the week after
+
+## Everyday commands
+
+On the server, as the project user: `sudo -iu peyyala`.
+
+| Task | Command |
+|---|---|
+| Deploy the latest `main` | `/srv/peyyala/prod/deploy.sh` |
+| Go back one release | `/srv/peyyala/prod/deploy.sh rollback` |
+| Is it up, and which commit? | `curl -s http://127.0.0.1:3001/api/health` or open `https://peyyala.com/api/health` |
+| Live logs | `pm2 logs peyyala-prod` |
+| Status, restarts, memory | `pm2 ls` |
+| Restart by hand | `pm2 restart peyyala-prod` |
+| Releases on disk | `ls /srv/peyyala/prod/releases` |
+| Database copies | `ls -lt /srv/peyyala/prod/backups` |
+| Restore a copy | see "Restoring a database copy" in [06](06-deploy-script.md) |
+
+On the laptop, making a database change: edit `src/server/db/schema.ts`,
+then `pnpm db:generate` and `pnpm db:migrate`. Follow the add-first rule in
+[05](05-migrations.md).
