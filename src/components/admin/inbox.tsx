@@ -58,7 +58,7 @@ export function MessageCard({ message }: { message: InboxMessage }) {
         </div>
       </header>
 
-      <p className="mt-3 text-sm leading-relaxed break-words whitespace-pre-wrap">{message.message}</p>
+      <p className="mt-3 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap">{message.message}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {/* Opens the admin's mail app; replying counts as reading it */}

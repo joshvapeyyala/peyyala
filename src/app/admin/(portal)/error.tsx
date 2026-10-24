@@ -16,7 +16,7 @@ export default function AdminError({ error, retry }: { error: unknown; retry: ()
       <p className="mx-auto mt-2 max-w-md text-sm text-muted">
         Something went wrong on the server, often the database being briefly unreachable. Try again, and if it keeps happening check the server log.
       </p>
-      {detail && <p className="mx-auto mt-4 max-w-lg rounded-lg bg-sunken px-3 py-2 text-left font-mono text-xs break-words">{detail}</p>}
+      {detail && <p className="mx-auto mt-4 max-w-lg rounded-lg bg-sunken px-3 py-2 text-left font-mono text-xs wrap-break-word">{detail}</p>}
       <div className="mt-6 flex justify-center gap-2">
         <Button variant="primary" onClick={retry}>
           Try again
