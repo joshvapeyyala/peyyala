@@ -81,5 +81,5 @@ laptop doesn't.
 
 ## Status
 
-- [ ] `shared-web-sg` created (80, 443/TCP, 443/UDP, 22)
-- [ ] `shared-db-sg` created (5432 from `shared-web-sg` only)
+- [x] `shared-web-sg` created (80, 443/TCP, 443/UDP, 22)
+- [x] `shared-db-sg` created (5432 from `shared-web-sg` only)
