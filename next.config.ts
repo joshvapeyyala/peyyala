@@ -17,8 +17,8 @@ const nextConfig: NextConfig = {
     serverActions: { bodySizeLimit: "6mb" },
   },
   images: {
-    // Local uploads are served from /uploads, which next/image allows as a
-    // local path. Files in S3 need their address listed here.
+    // Uploads live in an S3 bucket (src/server/storage.ts); next/image only
+    // loads images from addresses listed here
     remotePatterns: process.env.STORAGE_PUBLIC_URL ? [new URL(`${process.env.STORAGE_PUBLIC_URL}/**`)] : [],
   },
   cacheComponents: true,
