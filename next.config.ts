@@ -1,6 +1,18 @@
+import { execSync } from "node:child_process";
 import type { NextConfig } from "next";
 
+// The commit this build was made from, for /api/health. Baked in at build
+// time, so each release reports its own commit, also after a rollback.
+function buildCommit() {
+  try {
+    return execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+  } catch {
+    return "unknown";
+  }
+}
+
 const nextConfig: NextConfig = {
+  env: { BUILD_COMMIT: buildCommit() },
   // Dev only: let phones on the local network load the dev server's scripts.
   // Without this the page renders but nothing on it responds to taps.
   allowedDevOrigins: ["192.168.*.*"],
