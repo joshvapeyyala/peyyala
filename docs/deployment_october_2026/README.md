@@ -137,6 +137,8 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 ### Phase F: automatic deploys
 - [x] F1 Deploy key for GitHub: can only run `deploy.sh` (tested) ([phase-f-01](phase-f-01-deploy-key.md))
 - [x] F3 Workflow `.github/workflows/deploy.yml`: on push to `main`, lint + type-check, then `deploy.sh` ([phase-f-03](phase-f-03-workflow.md))
+- [x] F4 `main` protected: no deletion, no force-push ([phase-f-04](phase-f-04-protect-main.md))
+- [ ] F5 First automatic deploy, and a failing check stopping one
 - [x] F2 Secrets in GitHub: `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_KNOWN_HOSTS` ([phase-f-02](phase-f-02-github-secrets.md))
 
 ### Phase G: operations
