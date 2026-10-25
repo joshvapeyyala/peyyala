@@ -18,6 +18,11 @@ smaller allowed server, and upgrade before it ends.
       the paid plan (Billing and Cost Management). Remaining credits stay
       usable until 12 months after sign-up.
 
+After upgrading:
+
+- [ ] RDS `shared-db-1`: backup retention 1 → 7 days ([phase-b-06](phase-b-06-rds.md))
+- [ ] Consider `shared-web-1` → `t3a.medium` (more memory for several projects)
+
 Cheaper server = credits last longer. Resizing later (for example to
 `t3a.medium` after upgrading) takes about 2 minutes of downtime: stop, change
 instance type, start. Everything on the disk stays.
