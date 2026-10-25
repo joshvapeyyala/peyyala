@@ -31,6 +31,10 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          # On its own, setup-node v5 sets up a pnpm cache as soon as it sees
+          # package.json's packageManager, before corepack has made pnpm
+          # available, and fails ("Unable to locate executable file: pnpm")
+          package-manager-cache: false
       # pnpm, at the version package.json asks for
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
