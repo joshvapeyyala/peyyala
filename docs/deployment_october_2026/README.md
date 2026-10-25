@@ -24,7 +24,7 @@ everyday commands.
 RDS "shared-db-1" (Postgres 17)   S3                              Brevo
   peyyala_prod (own login)          joshua-portfolio-prod (live)   notification
   other projects' databases         joshua-portfolio-dev (laptop)  emails
-                                    shared-db-backups (nightly)
+                                    joshua-peyyala-db-backups (nightly)
 ```
 
 | | Laptop | Live |
@@ -83,7 +83,7 @@ Never committed, never on the laptop.
 - [x] Merge `dev` into `main` and push (2026-10-25). Keep `main` up to date
       with what should be live: the server deploys `main`.
 
-### Phase B: AWS foundation (console steps come with the phase)
+### Phase B: AWS foundation (done 2026-10-25, except the items still open below)
 - [x] Account secured: MFA on root, admin user `joshva-admin` with MFA ([phase-b-00](phase-b-00-secure-account.md))
 - [x] Budget alert exists at $25; raise it later to fit the setup ([phase-b-01](phase-b-01-budget.md))
 - [x] Key pair `shared-web-key`, kept safe on the laptop and backed up ([phase-b-02](phase-b-02-key-pair.md))
@@ -93,7 +93,7 @@ Never committed, never on the laptop.
 - [x] Elastic IP `52.66.16.188` attached to `shared-web-1`, SSH login works ([phase-b-05](phase-b-05-elastic-ip.md))
 - [x] RDS `shared-db-1`: PostgreSQL 17, db.t4g.micro, 20 GB gp3, zone ap-south-1b, private, encrypted, backups 1 day (7 after the plan upgrade), deletion protection. Reachable from the server only, TLS verified. Leave `rds.force_ssl` on ([phase-b-06](phase-b-06-rds.md), [03](03-database-ssl.md))
 - [x] S3 `joshua-portfolio-prod` + IAM user `joshua-portfolio-prod-app` + its key ([phase-b-07](phase-b-07-prod-bucket.md)); public-read test in Phase E
-- [ ] S3 `shared-db-backups` (private, 30-day delete rule) + IAM user `shared-backup`
+- [x] S3 `joshua-peyyala-db-backups` (private, versioned, 30-day delete rule) + write-only IAM user `shared-backup` ([phase-b-08](phase-b-08-backups-bucket.md))
 
 ### Phase C: server setup (one script, from me)
 Covers: updates, swap, fail2ban, Node 22, pnpm, PM2, Caddy, **PostgreSQL 17
