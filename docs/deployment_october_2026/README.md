@@ -97,7 +97,7 @@ Never committed, never on the laptop.
 
 ### Phase C: server setup (step by step, scripts in `scripts/server/`)
 - [x] C1 System basics: updates, automatic security updates, IST, 4 GB swap, fail2ban ([phase-c-01](phase-c-01-system-basics.md))
-- [ ] C2 Site tools: Node 22, pnpm, PM2
+- [x] C2 Site tools: Node 22, pnpm, PM2 ([phase-c-02](phase-c-02-site-tools.md))
 - [ ] C3 Database tools: PostgreSQL 17 client, RDS certificate
 - [ ] C4 Caddy + DNS records in Cloudflare
 - [ ] C5 Project home: user `peyyala`, folders, PM2 at boot, `deploy.sh`
