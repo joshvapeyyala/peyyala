@@ -122,7 +122,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [x] D5 Google OAuth client has origin `https://peyyala.com` and redirect URI `https://peyyala.com/api/auth/callback/google`; admin is a test user ([phase-d-05](phase-d-05-google-oauth.md))
 - [x] D6 Domain hardening: DNSSEC enabled and published at .com, CAA for Let's Encrypt + Sectigo, transfer lock and auto-renew confirmed ([phase-d-06](phase-d-06-domain-hardening.md))
 
-### Phase E: first deploy
+### Phase E: first deploy (done 2026-10-26; live since 2026-10-25 23:40 IST)
 - [x] E1 Production `.env` filled in and every value checked ([phase-e-01](phase-e-01-env.md))
 - [x] E2 `main` updated to `dev` (`f613776`) after lint, type-check and a secret scan
 - [x] E3 First deploy: migrated, starting content loaded, built in ~1.5 min, live and healthy ([phase-e-03](phase-e-03-first-deploy.md))
@@ -132,7 +132,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [x] E5 Upload to the prod bucket works (public, optimized, preview) ([phase-e-05](phase-e-05-user-checks.md)); upload the remaining real screenshots and resume whenever you like
 - [x] E5 Contact form: saved and delivered through Brevo ([phase-e-05](phase-e-05-user-checks.md))
 - [x] E6 Reboot with the site running: back in ~25 s, everything restarted, admin edits kept ([phase-e-06](phase-e-06-reboot-test.md))
-- [ ] Remove "(launching soon)" from the root `README.md`
+- [x] E7 Wrap-up: README updated, `X-Powered-By` off, page title follows the tagline; first update deploy (`b3dc58b`) ([phase-e-07](phase-e-07-wrap-up.md))
 
 ### Phase F: automatic deploys
 - [ ] GitHub Actions: on push to `main`, run lint and type-check, then SSH in and run `deploy.sh`

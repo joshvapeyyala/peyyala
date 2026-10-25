@@ -43,4 +43,4 @@ number is PM2's process id). `pm2 logs peyyala-prod` finds them either way.
 - [x] Encrypted database connection from the site
 - [x] No errors in the site's log
 - [x] Backup contains the live data
-- [ ] Optional: `poweredByHeader: false` (E7)
+- [x] `poweredByHeader: false` (done in E7)
