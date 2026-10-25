@@ -42,4 +42,6 @@ step "PM2"
 npm install -g --no-fund --no-audit pm2@6 >/dev/null
 
 step "Done"
-echo "node $(node -v), npm $(npm -v), corepack $(corepack --version), pm2 $(pm2 -v 2>/dev/null | tail -n 1), $(git --version)"
+# PM2's version from its package file: running pm2 itself would start an idle
+# PM2 process for root
+echo "node $(node -v), npm $(npm -v), corepack $(corepack --version), pm2 $(node -p "require('$(npm root -g)/pm2/package.json').version"), $(git --version)"

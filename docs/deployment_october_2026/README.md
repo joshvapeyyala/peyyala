@@ -101,7 +101,7 @@ Never committed, never on the laptop.
 - [x] C3 Database tools: PostgreSQL 17 client, RDS certificate ([phase-c-03](phase-c-03-database-tools.md))
 - [x] C4 Caddy + DNS records in Cloudflare: HTTPS live, "back soon" page until deploy ([phase-c-04](phase-c-04-caddy.md))
 - [x] C5 Project home: user `peyyala`, folders, PM2 at boot + log rotation, `deploy.sh` ([phase-c-05](phase-c-05-project-home.md))
-- [ ] C6 Database `peyyala_prod` + login, `.env` started (you type the RDS master password)
+- [x] C6 Database `peyyala_prod` + login (isolated, TLS verified), `.env` started ([phase-c-06](phase-c-06-project-database.md))
 - [ ] C7 Nightly backups to S3 (you type the backup key)
 - [ ] C8 Final check
 
@@ -119,7 +119,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [ ] Google OAuth client: add origin `https://peyyala.com` and redirect URI `https://peyyala.com/api/auth/callback/google`
 
 ### Phase E: first deploy
-- [ ] Create the production `.env` (table above)
+- [ ] Fill in the production `.env`'s blanks: Google, `ADMIN_EMAIL`, S3 key, Brevo (started in C6: [phase-c-06](phase-c-06-project-database.md))
 - [ ] `deploy.sh`: first run migrates and loads the starting content ([06](06-deploy-script.md))
 - [ ] `https://peyyala.com/api/health` shows the latest commit on `main` ([04](04-health-check.md))
 - [ ] Database connection encrypted: `ssl = t` ([03](03-database-ssl.md))

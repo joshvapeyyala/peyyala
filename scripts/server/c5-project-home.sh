@@ -49,6 +49,8 @@ chmod 700 "$BASE/deploy.sh"
 step "PM2 for $PROJECT: start at boot"
 # Writes and enables the systemd service pm2-<project>
 pm2 startup systemd -u "$PROJECT" --hp "$HOME_DIR" >/dev/null
+# That started an idle PM2 process for root, which nothing uses
+pm2 kill >/dev/null 2>&1 || true
 systemctl enable "pm2-$PROJECT" >/dev/null
 systemctl start "pm2-$PROJECT"
 
