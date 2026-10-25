@@ -131,7 +131,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [x] E5 Google sign-in works; an admin save shows on the site immediately ([phase-e-05](phase-e-05-user-checks.md))
 - [x] E5 Upload to the prod bucket works (public, optimized, preview) ([phase-e-05](phase-e-05-user-checks.md)); upload the remaining real screenshots and resume whenever you like
 - [x] E5 Contact form: saved and delivered through Brevo ([phase-e-05](phase-e-05-user-checks.md))
-- [ ] Reboot the server once; the site comes back by itself ([07](07-pm2-config.md))
+- [x] E6 Reboot with the site running: back in ~25 s, everything restarted, admin edits kept ([phase-e-06](phase-e-06-reboot-test.md))
 - [ ] Remove "(launching soon)" from the root `README.md`
 
 ### Phase F: automatic deploys

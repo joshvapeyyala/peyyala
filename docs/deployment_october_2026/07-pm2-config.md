@@ -90,4 +90,4 @@ site comes back by itself: `https://peyyala.com/api/health`.
 - [x] Tested: settings applied on deploy, local-only port, crash restart,
       timestamps, log rotation
 - [x] Log rotation and start-at-boot on the server (Phase C, [phase-c-05](phase-c-05-project-home.md))
-- [ ] Reboot test (Phase E)
+- [x] Reboot test (Phase E: back in ~25 s, [phase-e-06](phase-e-06-reboot-test.md))
