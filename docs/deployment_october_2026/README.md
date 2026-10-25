@@ -115,8 +115,11 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 ### Phase D: domain, email, sign-in
 - [x] peyyala.com bought at Cloudflare
 - [x] Cloudflare DNS (grey cloud): `peyyala.com` A → `52.66.16.188`, `www` CNAME → `peyyala.com` (done in C4)
-- [ ] Brevo: authenticate peyyala.com, add sender `notifications@peyyala.com`, create keys `peyyala-local-test` and `peyyala-prod` ([01](01-brevo-email.md))
-- [ ] Google OAuth client: add origin `https://peyyala.com` and redirect URI `https://peyyala.com/api/auth/callback/google`
+- [x] D1 Brevo: peyyala.com's DKIM, DMARC and ownership records added and matching; Brevo's "Authenticated" status pending ([phase-d-01](phase-d-01-brevo-domain.md))
+- [ ] D2 Brevo sender `notifications@peyyala.com`
+- [ ] D3 Brevo API keys `peyyala-prod` (and `peyyala-local-test`), allowed IPs
+- [ ] D4 Real test email from the laptop ([01](01-brevo-email.md))
+- [ ] D5 Google OAuth client: add origin `https://peyyala.com` and redirect URI `https://peyyala.com/api/auth/callback/google`
 
 ### Phase E: first deploy
 - [ ] Fill in the production `.env`'s blanks: Google, `ADMIN_EMAIL`, S3 key, Brevo (started in C6: [phase-c-06](phase-c-06-project-database.md))
@@ -136,7 +139,8 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 
 ### Phase G: operations
 - [ ] UptimeRobot on `https://peyyala.com/api/health`, every 5 minutes ([04](04-health-check.md))
-- [ ] Test a restore once, from a nightly dump into a scratch database ([06](06-deploy-script.md))
+- [ ] Test a restore once, from a nightly dump into a scratch database ([phase-c-07](phase-c-07-backups.md))
+- [ ] After a few clean weeks: DMARC `p=none` → `p=quarantine` ([phase-d-01](phase-d-01-brevo-domain.md))
 - [ ] Monthly: check the AWS bill against the budget
 
 ### Phase H: other projects, then clean up
