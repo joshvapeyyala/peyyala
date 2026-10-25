@@ -73,5 +73,5 @@ To repeat the failure test: `docker pause peyyala-db-1`, open
 - [x] OK and failure answers checked on the laptop
 - [x] Not prerendered in a production build: the route list shows
       `/api/health` as dynamic (`ƒ`) (checked during the item 6 tests)
-- [ ] Checked on peyyala.com after the first deploy (Phase E)
+- [x] Checked on peyyala.com after the first deploy: `{"ok":true,"commit":"f613776"}` ([phase-e-03](phase-e-03-first-deploy.md))
 - [ ] UptimeRobot monitor set up (Phase G)

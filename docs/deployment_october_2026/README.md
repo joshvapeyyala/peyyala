@@ -124,8 +124,9 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 
 ### Phase E: first deploy
 - [x] E1 Production `.env` filled in and every value checked ([phase-e-01](phase-e-01-env.md))
-- [ ] `deploy.sh`: first run migrates and loads the starting content ([06](06-deploy-script.md))
-- [ ] `https://peyyala.com/api/health` shows the latest commit on `main` ([04](04-health-check.md))
+- [x] E2 `main` updated to `dev` (`f613776`) after lint, type-check and a secret scan
+- [x] E3 First deploy: migrated, starting content loaded, built in ~1.5 min, live and healthy ([phase-e-03](phase-e-03-first-deploy.md))
+- [x] `https://peyyala.com/api/health` shows the latest commit on `main` (`f613776`) ([04](04-health-check.md))
 - [ ] Database connection encrypted: `ssl = t` ([03](03-database-ssl.md))
 - [ ] Google sign-in works; an admin save shows on the site immediately
 - [ ] Upload the real screenshots and resume in the live admin ([02](02-s3-storage.md))

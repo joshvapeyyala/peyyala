@@ -100,4 +100,4 @@ content: `pnpm db:seed`.
 - [x] Checked: up to date, fresh database, SSL failure, password failure,
       all-or-nothing on a broken migration
 - [x] Backup-before-migrate in the deploy script (item 6), tested
-- [ ] First migration on RDS (Phase E)
+- [x] First migration on RDS (Phase E: 3 applied, [phase-e-03](phase-e-03-first-deploy.md))

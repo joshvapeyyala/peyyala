@@ -166,5 +166,5 @@ Test this once on a scratch database before relying on it (Phase G).
 - [x] `.gitattributes` keeps it with Linux line endings
 - [x] `/api/health` confirmed dynamic in a production build (route list `ƒ`)
 - [ ] `master` renamed to `main`
-- [ ] Server prepared (Phase C), first real deploy (Phase E)
+- [x] Server prepared (Phase C), first real deploy (Phase E, [phase-e-03](phase-e-03-first-deploy.md))
 - [ ] GitHub Actions runs it on push to `main` (Phase F)
