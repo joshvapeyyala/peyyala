@@ -224,5 +224,5 @@ The prod user's key goes in the server's `.env` in Phase E, never on the laptop.
       the old file; resume upload has the right headers; the dashboard's
       resume check works through S3. Test files removed afterwards.
 - [ ] Prod bucket, user and key created
-- [ ] Live-site values on the server, uploads checked on peyyala.com (Phase E)
+- [x] Live-site values on the server, uploads checked on peyyala.com ([phase-e-05](phase-e-05-user-checks.md))
 - [ ] Tests rewritten (later)

@@ -50,4 +50,4 @@ turned on by you before this check.
 - [x] Live origin and redirect URI on the client
 - [x] Admin account is a test user
 - [x] 2-step verification on the Google account
-- [ ] Sign-in works on peyyala.com (Phase E)
+- [x] Sign-in works on peyyala.com ([phase-e-05](phase-e-05-user-checks.md))

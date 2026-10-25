@@ -62,4 +62,4 @@ In Gmail (checked by you):
 - [x] Test email delivered to the inbox; SPF, DKIM, DMARC all PASS
 - [x] Server address `52.66.16.188` authorized in Brevo in advance
 - [ ] Laptop back on `MAIL_DRIVER=console` (you)
-- [ ] Email from the live site (Phase E)
+- [x] Email from the live site, delivered ([phase-e-05](phase-e-05-user-checks.md))
