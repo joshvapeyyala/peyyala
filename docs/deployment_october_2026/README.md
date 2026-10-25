@@ -134,11 +134,11 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [x] E6 Reboot with the site running: back in ~25 s, everything restarted, admin edits kept ([phase-e-06](phase-e-06-reboot-test.md))
 - [x] E7 Wrap-up: README updated, `X-Powered-By` off, page title follows the tagline; first update deploy (`b3dc58b`) ([phase-e-07](phase-e-07-wrap-up.md))
 
-### Phase F: automatic deploys
+### Phase F: automatic deploys (done 2026-10-26)
 - [x] F1 Deploy key for GitHub: can only run `deploy.sh` (tested) ([phase-f-01](phase-f-01-deploy-key.md))
 - [x] F3 Workflow `.github/workflows/deploy.yml`: on push to `main`, lint + type-check, then `deploy.sh` ([phase-f-03](phase-f-03-workflow.md))
 - [x] F4 `main` protected: no deletion, no force-push ([phase-f-04](phase-f-04-protect-main.md))
-- [ ] F5 First automatic deploy, and a failing check stopping one
+- [x] F5 First automatic deploy (push → live in ~70 s) and a type error stopping one ([phase-f-05](phase-f-05-test.md))
 - [x] F2 Secrets in GitHub: `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_KNOWN_HOSTS` ([phase-f-02](phase-f-02-github-secrets.md))
 
 ### Phase G: operations

@@ -57,5 +57,15 @@ Rollback stays a deliberate step on the server:
 
 - [x] Workflow written, actionlint clean
 - [x] Check job passes on a fresh clone
-- [ ] Committed and pushed (you)
-- [ ] First real run (F5)
+- [x] Committed and pushed (you)
+- [x] First real run (F5); one fix needed, see below
+
+## Fix after the first run (2026-10-26)
+
+The first run failed in 9 s at `actions/setup-node@v5`: `Unable to locate
+executable file: pnpm`. setup-node v5 sets up a pnpm cache by itself when
+`package.json` names a `packageManager`, before the `corepack enable` step has
+made pnpm available. Fixed with `package-manager-cache: false` (commit
+`e3486eb`). Neither actionlint nor the local run of the check commands could
+catch it: it only happens inside GitHub's `setup-node` action. The deploy job
+was skipped, so the site wasn't touched.

@@ -44,4 +44,4 @@ laptop, `gh secret set NAME --repo joshvapeyyala/peyyala`.
 
 - [x] 3 secrets saved in GitHub
 - [ ] Copy-from file `C:\Users\J\.ssh\github-secrets-peyyala.txt` deleted (you)
-- [ ] Values proven by a real run (F5)
+- [x] Values proven by a real run (F5, run 40228571971)
