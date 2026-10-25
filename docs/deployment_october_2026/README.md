@@ -100,7 +100,7 @@ Never committed, never on the laptop.
 - [x] C2 Site tools: Node 22, pnpm, PM2 ([phase-c-02](phase-c-02-site-tools.md))
 - [x] C3 Database tools: PostgreSQL 17 client, RDS certificate ([phase-c-03](phase-c-03-database-tools.md))
 - [x] C4 Caddy + DNS records in Cloudflare: HTTPS live, "back soon" page until deploy ([phase-c-04](phase-c-04-caddy.md))
-- [ ] C5 Project home: user `peyyala`, folders, PM2 at boot, `deploy.sh`
+- [x] C5 Project home: user `peyyala`, folders, PM2 at boot + log rotation, `deploy.sh` ([phase-c-05](phase-c-05-project-home.md))
 - [ ] C6 Database `peyyala_prod` + login, `.env` started (you type the RDS master password)
 - [ ] C7 Nightly backups to S3 (you type the backup key)
 - [ ] C8 Final check

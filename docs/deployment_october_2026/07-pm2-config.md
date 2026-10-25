@@ -89,5 +89,5 @@ site comes back by itself: `https://peyyala.com/api/health`.
 - [x] `ecosystem.config.cjs` written
 - [x] Tested: settings applied on deploy, local-only port, crash restart,
       timestamps, log rotation
-- [ ] Log rotation and start-at-boot on the server (Phase C)
+- [x] Log rotation and start-at-boot on the server (Phase C, [phase-c-05](phase-c-05-project-home.md))
 - [ ] Reboot test (Phase E)
