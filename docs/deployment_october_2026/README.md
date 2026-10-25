@@ -119,7 +119,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [ ] D2 Brevo sender `notifications@peyyala.com`
 - [ ] D3 Brevo API keys `peyyala-prod` (and `peyyala-local-test`), allowed IPs
 - [ ] D4 Real test email from the laptop ([01](01-brevo-email.md))
-- [ ] D5 Google OAuth client: add origin `https://peyyala.com` and redirect URI `https://peyyala.com/api/auth/callback/google`
+- [x] D5 Google OAuth client has origin `https://peyyala.com` and redirect URI `https://peyyala.com/api/auth/callback/google`; admin is a test user ([phase-d-05](phase-d-05-google-oauth.md))
 
 ### Phase E: first deploy
 - [ ] Fill in the production `.env`'s blanks: Google, `ADMIN_EMAIL`, S3 key, Brevo (started in C6: [phase-c-06](phase-c-06-project-database.md))
