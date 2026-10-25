@@ -42,7 +42,7 @@ so no code changes are needed to update content.
 | --------- | ------------------------------------------------------------------------------ |
 | Framework | Next.js 16 (App Router, Cache Components, Server Actions), React 19, TypeScript |
 | Styling   | Tailwind CSS 4, with designs and palettes as data (`src/content/themes.ts`)     |
-| Database  | PostgreSQL 17 with Drizzle ORM and SQL migrations                              |
+| Database  | PostgreSQL 18 with Drizzle ORM and SQL migrations                              |
 | Auth      | Better Auth with Google OAuth                                                  |
 | Validation | Zod, shared by forms and server actions                                       |
 | Files     | Amazon S3, one bucket per environment                                          |
@@ -59,7 +59,7 @@ You need **Node 22**, **pnpm** (`corepack enable` sets it up) and **Docker**.
 ```bash
 pnpm install
 cp .env.example .env.local   # then fill it in, see below
-pnpm db:up                   # Postgres 17 in Docker
+pnpm db:up                   # Postgres 18 in Docker
 pnpm db:migrate              # create the tables
 pnpm db:seed                 # load the starting content
 pnpm dev                     # http://localhost:3000, admin at /admin

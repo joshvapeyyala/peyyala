@@ -1,9 +1,11 @@
 # Local Postgres for development. Production uses RDS; only DATABASE_URL changes.
+# Same major version as RDS (shared-db-1 runs 18), so production backups
+# restore here and local testing matches the live database.
 #   docker compose up -d      start (data survives restarts in the named volume)
 #   docker compose down -v    stop and delete all local data
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     restart: unless-stopped
     environment:
       POSTGRES_USER: peyyala
@@ -12,7 +14,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # Postgres 18 images keep data in a version folder under this path
+      - pgdata18:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U peyyala -d peyyala"]
       interval: 2s
@@ -20,4 +23,4 @@ services:
       retries: 15
 
 volumes:
-  pgdata:
+  pgdata18:

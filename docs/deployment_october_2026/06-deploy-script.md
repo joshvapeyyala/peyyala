@@ -87,7 +87,7 @@ on Windows.
 ## Tested (2026-10-25)
 
 In a Docker container set up like the server (Node 22, pnpm via corepack,
-PM2 6, PostgreSQL 17 client), deploying a snapshot of the working tree on a
+PM2 6, PostgreSQL 17 client, as planned at the time), deploying a snapshot of the working tree on a
 `main` branch, against a scratch database:
 
 | # | Test                                                | Result |
@@ -112,13 +112,14 @@ shows the migration rule working. `shellcheck` reports no issues.
 1. **Rename `master` to `main`** (the script deploys `main`). Steps come with
    Phase F; the first manual deploy needs it too.
 2. **Phase C** (part of the server setup script):
-   - PostgreSQL 17 client tools (`pg_dump`, `psql`). Ubuntu 24.04 ships
-     version 16, which can't copy a version 17 database, so they come from
+   - PostgreSQL client tools (`pg_dump`, `psql`) in the **same major version
+     as RDS** (18; done in [phase-c-03](phase-c-03-database-tools.md)). pg_dump
+     refuses a newer server, so they come from
      PostgreSQL's own package repository:
      ```bash
      sudo apt install -y postgresql-common
      sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
-     sudo apt install -y postgresql-client-17
+     sudo apt install -y postgresql-client-18
      ```
    - Node 22, `corepack enable`, PM2, git, curl.
    - The folder `/srv/peyyala/prod`, owned by the `peyyala` user.

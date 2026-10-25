@@ -9,7 +9,7 @@ backups and keeps the disk healthy.
 
 | Choice                | Value                                           | Why |
 | --------------------- | ----------------------------------------------- | --- |
-| Engine                | PostgreSQL **17** (latest 17.x)                 | same major version as the laptop's Docker |
+| Engine                | PostgreSQL **18** (created as 18.3)             | 17 was planned; the form had 18 selected. Kept: newer, supported until Nov 2030. The laptop's Docker and the server's tools were moved to 18 to match |
 | Template              | **Free tier**                                   | the Free plan only allows small, single-zone databases; this template sets that up |
 | Size                  | `db.t4g.micro` (2 vCPU, 1 GB)                   | the smallest; plenty for a portfolio and a few small projects |
 | Storage               | 20 GB gp3, grows by itself up to 50 GB          | starts small, can't run out |
@@ -53,7 +53,7 @@ console (Modify > new master password).
 
 1. **Choose a database creation method:** **Standard create** (not Easy create).
 2. **Engine options:** **PostgreSQL**. Engine version: the newest
-   **PostgreSQL 17.x** in the list.
+   **PostgreSQL 18.x** (the form's default; 17 was planned, see the table above).
 3. **Templates:** **Free tier**.
 4. **Availability and durability:** **Single-AZ DB instance deployment**
    (the template may already have chosen it).
@@ -116,7 +116,7 @@ When **Status** is **Available** (10–15 minutes), open `shared-db-1`:
   - Availability Zone `ap-south-1b`
   - **Publicly accessible: No**
   - VPC security groups: **only `shared-db-sg`**
-- **Configuration:** engine version 17.x, instance class `db.t4g.micro`,
+- **Configuration:** engine version 18.x, instance class `db.t4g.micro`,
   storage encryption **Enabled**, deletion protection **Enabled**
 - **Maintenance & backups:** automated backups **Enabled**, 7 days
 

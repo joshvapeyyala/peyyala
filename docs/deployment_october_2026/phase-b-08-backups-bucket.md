@@ -104,4 +104,4 @@ the bucket the next morning.
 - [x] Access key `server` created and saved
 - [x] Checked from the laptop: bucket in `ap-south-1`; listing and file
       reads refused without keys (403)
-- [ ] First nightly backup lands in the bucket (Phase C)
+- [x] First backup lands in the bucket (Phase C, [phase-c-07](phase-c-07-backups.md)); the `shared-backup` policy first named the wrong bucket and was corrected
