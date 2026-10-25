@@ -95,7 +95,17 @@ Never committed, never on the laptop.
 - [x] S3 `joshua-portfolio-prod` + IAM user `joshua-portfolio-prod-app` + its key ([phase-b-07](phase-b-07-prod-bucket.md)); public-read test in Phase E
 - [x] S3 `joshua-peyyala-db-backups` (private, versioned, 30-day delete rule) + write-only IAM user `shared-backup` ([phase-b-08](phase-b-08-backups-bucket.md))
 
-### Phase C: server setup (one script, from me)
+### Phase C: server setup (step by step, scripts in `scripts/server/`)
+- [x] C1 System basics: updates, automatic security updates, IST, 4 GB swap, fail2ban ([phase-c-01](phase-c-01-system-basics.md))
+- [ ] C2 Site tools: Node 22, pnpm, PM2
+- [ ] C3 Database tools: PostgreSQL 17 client, RDS certificate
+- [ ] C4 Caddy + DNS records in Cloudflare
+- [ ] C5 Project home: user `peyyala`, folders, PM2 at boot, `deploy.sh`
+- [ ] C6 Database `peyyala_prod` + login, `.env` started (you type the RDS master password)
+- [ ] C7 Nightly backups to S3 (you type the backup key)
+- [ ] C8 Final check
+
+Originally planned as one script, covering:
 Covers: updates, swap, fail2ban, Node 22, pnpm, PM2, Caddy, **PostgreSQL 17
 client tools** ([06](06-deploy-script.md)), the `peyyala` user and folders,
 RDS certificate ([03](03-database-ssl.md)), databases and logins, nightly
