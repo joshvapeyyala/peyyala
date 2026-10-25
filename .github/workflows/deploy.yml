@@ -1,0 +1,77 @@
+# Puts main live on peyyala.com: checks the code, then runs deploy.sh on the
+# server. Runs on every push to main, or by hand (Actions > Deploy > Run
+# workflow). Notes: docs/deployment_october_2026/phase-f-03-workflow.md
+#
+# The build happens on the server (it prerenders from the database, which
+# only the server can reach). deploy.sh builds before switching and checks
+# the site's health after, switching back by itself if it's unhealthy.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; a second push waits for the first instead of
+# cancelling it halfway
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint and type-check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      # pnpm, at the version package.json asks for
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      # Route types (PageProps, RouteContext...) that next build would make
+      - run: pnpm exec next typegen
+      - run: pnpm exec tsc --noEmit
+
+  deploy:
+    name: Deploy to peyyala.com
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Load the deploy key and the server's host key
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          # tr: a secret pasted on Windows may carry carriage returns
+          printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
+
+      # The server only lets this key run /srv/peyyala/prod/deploy.sh
+      # (docs/deployment_october_2026/phase-f-01-deploy-key.md); its exit
+      # code becomes this step's
+      - name: Run deploy.sh on the server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o ServerAliveInterval=30 "peyyala@$DEPLOY_HOST" deploy
+
+      - name: Check the live site from outside
+        run: |
+          health=$(curl -fsS --max-time 15 https://peyyala.com/api/health)
+          echo "$health"
+          [[ $health == *'"ok":true'* ]]
+
+      - name: Remove the key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
