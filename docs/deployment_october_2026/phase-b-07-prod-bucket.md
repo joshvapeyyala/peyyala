@@ -101,5 +101,4 @@ The full upload test (with the key) happens on the live site in Phase E.
 - [x] User `joshua-portfolio-prod-app` with the inline policy
 - [x] Access key `server` created and saved
 - [x] Checked from the laptop: bucket exists in `ap-south-1`, listing refused (403)
-- [ ] Public reads: tested with the first upload on the live site (Phase E).
-      An empty bucket answers 403 either way, so it can't be told apart before
+- [x] Public reads: tested in Phase E1 with the server's key (upload, public 200, delete) ([phase-e-01](phase-e-01-env.md))

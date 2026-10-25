@@ -88,4 +88,4 @@ longer leave one behind. Temporary script copies on the server removed.
 
 - [x] Database and login `peyyala_prod`, isolated, verified TLS
 - [x] `.env` started, private to `peyyala`
-- [ ] `.env` blanks filled in (Phase D/E)
+- [x] `.env` blanks filled in ([phase-e-01](phase-e-01-env.md))

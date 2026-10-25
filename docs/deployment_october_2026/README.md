@@ -123,7 +123,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [x] D6 Domain hardening: DNSSEC enabled and published at .com, CAA for Let's Encrypt + Sectigo, transfer lock and auto-renew confirmed ([phase-d-06](phase-d-06-domain-hardening.md))
 
 ### Phase E: first deploy
-- [ ] Fill in the production `.env`'s blanks: Google, `ADMIN_EMAIL`, S3 key, Brevo (started in C6: [phase-c-06](phase-c-06-project-database.md))
+- [x] E1 Production `.env` filled in and every value checked ([phase-e-01](phase-e-01-env.md))
 - [ ] `deploy.sh`: first run migrates and loads the starting content ([06](06-deploy-script.md))
 - [ ] `https://peyyala.com/api/health` shows the latest commit on `main` ([04](04-health-check.md))
 - [ ] Database connection encrypted: `ssl = t` ([03](03-database-ssl.md))
