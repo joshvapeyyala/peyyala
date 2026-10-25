@@ -137,7 +137,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 ### Phase F: automatic deploys
 - [x] F1 Deploy key for GitHub: can only run `deploy.sh` (tested) ([phase-f-01](phase-f-01-deploy-key.md))
 - [ ] GitHub Actions: on push to `main`, run lint and type-check, then SSH in and run `deploy.sh`
-- [ ] Secrets in GitHub: deploy SSH key (not your personal one), server address, known-hosts entry
+- [x] F2 Secrets in GitHub: `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_KNOWN_HOSTS` ([phase-f-02](phase-f-02-github-secrets.md))
 
 ### Phase G: operations
 - [ ] UptimeRobot on `https://peyyala.com/api/health`, every 5 minutes ([04](04-health-check.md))
