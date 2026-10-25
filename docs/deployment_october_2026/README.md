@@ -135,6 +135,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [x] E7 Wrap-up: README updated, `X-Powered-By` off, page title follows the tagline; first update deploy (`b3dc58b`) ([phase-e-07](phase-e-07-wrap-up.md))
 
 ### Phase F: automatic deploys
+- [x] F1 Deploy key for GitHub: can only run `deploy.sh` (tested) ([phase-f-01](phase-f-01-deploy-key.md))
 - [ ] GitHub Actions: on push to `main`, run lint and type-check, then SSH in and run `deploy.sh`
 - [ ] Secrets in GitHub: deploy SSH key (not your personal one), server address, known-hosts entry
 
