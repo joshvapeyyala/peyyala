@@ -5,7 +5,7 @@ It covers his projects with case studies, the services he offers and his
 resume, plus a contact form. Everything on it is edited from a private admin,
 so no code changes are needed to update content.
 
-**Live site:** [peyyala.com](https://peyyala.com) (launching soon)
+**Live site:** [peyyala.com](https://peyyala.com)
 
 ## What it does
 

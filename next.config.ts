@@ -13,6 +13,8 @@ function buildCommit() {
 
 const nextConfig: NextConfig = {
   env: { BUILD_COMMIT: buildCommit() },
+  // No "X-Powered-By: Next.js" header: no need to tell strangers what runs here
+  poweredByHeader: false,
   // Dev only: let phones on the local network load the dev server's scripts.
   // Without this the page renders but nothing on it responds to taps.
   allowedDevOrigins: ["192.168.*.*"],
