@@ -50,5 +50,5 @@ spam). Added to the Phase G checklist.
 
 - [x] 4 records in Cloudflare, DNS only, publicly visible
 - [x] Brevo: all records match
-- [ ] Brevo's domain list shows peyyala.com as **Authenticated**
+- [x] Brevo's domain list shows peyyala.com as **Authenticated** (2026-10-25: the first "Authenticate domain" stayed pending; running Verify records + Authenticate domain again later gave "Your domain has been authenticated")
 - [ ] Later (Phase G): DMARC `p=none` → `p=quarantine`

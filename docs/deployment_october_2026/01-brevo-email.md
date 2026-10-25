@@ -82,6 +82,6 @@ Locally, none of this is needed day to day: `console` prints the email.
 ## Status
 
 - [x] Driver written, Resend removed
-- [ ] Domain authenticated (records done, [phase-d-01](phase-d-01-brevo-domain.md)) and sender `notifications@peyyala.com` added in Brevo
+- [x] Domain authenticated ([phase-d-01](phase-d-01-brevo-domain.md)) and sender `notifications@peyyala.com` verified ([phase-d-02](phase-d-02-brevo-sender.md))
 - [ ] Real test email sent from the laptop
 - [ ] Production key in the server's `.env`, test email from the live site
