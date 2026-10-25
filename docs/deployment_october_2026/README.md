@@ -95,7 +95,7 @@ Never committed, never on the laptop.
 - [x] S3 `joshua-portfolio-prod` + IAM user `joshua-portfolio-prod-app` + its key ([phase-b-07](phase-b-07-prod-bucket.md)); public-read test in Phase E
 - [x] S3 `joshua-peyyala-db-backups` (private, versioned, 30-day delete rule) + write-only IAM user `shared-backup` ([phase-b-08](phase-b-08-backups-bucket.md))
 
-### Phase C: server setup (step by step, scripts in `scripts/server/`)
+### Phase C: server setup (done 2026-10-25; step by step, scripts in `scripts/server/`)
 - [x] C1 System basics: updates, automatic security updates, IST, 4 GB swap, fail2ban ([phase-c-01](phase-c-01-system-basics.md))
 - [x] C2 Site tools: Node 22, pnpm, PM2 ([phase-c-02](phase-c-02-site-tools.md))
 - [x] C3 Database tools: PostgreSQL 18 client (matches RDS), RDS certificate ([phase-c-03](phase-c-03-database-tools.md))
@@ -103,7 +103,7 @@ Never committed, never on the laptop.
 - [x] C5 Project home: user `peyyala`, folders, PM2 at boot + log rotation, `deploy.sh` ([phase-c-05](phase-c-05-project-home.md))
 - [x] C6 Database `peyyala_prod` + login (isolated, TLS verified), `.env` started ([phase-c-06](phase-c-06-project-database.md))
 - [x] C7 Nightly backups to S3 at 02:30, healthchecks.io alerts ([phase-c-07](phase-c-07-backups.md))
-- [ ] C8 Final check
+- [x] C8 Final check, including a reboot test ([phase-c-08](phase-c-08-final-check.md))
 
 Originally planned as one script, covering:
 Covers: updates, swap, fail2ban, Node 22, pnpm, PM2, Caddy, **PostgreSQL 18
