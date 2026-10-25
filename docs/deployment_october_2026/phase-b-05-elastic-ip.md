@@ -59,10 +59,15 @@ exit
 
 ## The address
 
-Elastic IP: `...` (not a secret; needed for DNS in Phase D and for Phase C)
+Elastic IP: **`52.66.16.188`** (not a secret; needed for DNS in Phase D and
+for Phase C)
 
 ## Status
 
-- [ ] Elastic IP allocated and tagged
-- [ ] Associated with `shared-web-1`
-- [ ] First SSH login works with `shared-web-key`
+- [x] Elastic IP allocated and tagged
+- [x] Associated with `shared-web-1`; kept through a stop/start (resize)
+- [x] First SSH login works with `shared-web-key` (2026-10-25). Checked on the
+      server: password login off, root login key-only, IMDSv2 enforced
+
+If ssh ever just times out: check the instance is **Running** (a stop, for
+example to resize, needs a **Start** afterwards).

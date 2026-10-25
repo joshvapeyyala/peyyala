@@ -103,6 +103,12 @@ attached in step 5. The first login is the check at the end of step 5.
 
 ## Status
 
-- [x] `shared-web-1` launched; type: **`t3.small`** (2026-10-25)
-- [x] Running
-- [ ] Details, storage and security confirmed
+- [x] `shared-web-1` launched (2026-10-25). It first came up as `t3.micro`
+      (908 MB, too small); changed to **`t3.small`** (stop, change type,
+      start). Confirmed from the server: `t3.small`, 2 vCPU, 1.9 GB.
+- [x] Running, zone `ap-south-1b`
+- [x] IMDSv2 required (a request without a token gets 401)
+- [ ] Storage tab: Encrypted Yes; Details tab: termination protection Enabled
+
+**Operating system:** AWS's Ubuntu option now installs **Ubuntu 26.04.1 LTS**
+(supported until 2031), not 24.04. Kept: the Phase C script targets 26.04.
