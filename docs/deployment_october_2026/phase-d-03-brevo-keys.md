@@ -26,9 +26,11 @@ another project's and wasn't touched.
 
 ### Authorized IPs
 
-Brevo > Settings > Security > Authorized IPs: blocking of unknown addresses
-is **off** for API keys, so the laptop and the server can both send. Nothing
-changed.
+Brevo > Settings > Security > Authorized IPs showed blocking of unknown
+addresses as off for API keys. It wasn't: the D4 test was refused from the
+laptop's address, and the page then showed blocking as on. Both the laptop
+(`43.227.131.16`) and the server (`52.66.16.188`) are now authorized
+([phase-d-04](phase-d-04-test-email.md)).
 
 ## Worth knowing
 
@@ -37,9 +39,7 @@ changed.
   other senders), not only send email. It lives in a file only the `peyyala`
   user can read. If Brevo offers narrower permissions when editing a key,
   "send transactional emails" alone is enough for this site.
-- **Tightening later (optional, Phase G):** switch on IP blocking for API
-  keys and authorize only the server (`52.66.16.188`). The laptop key would
-  then stop working, which is fine once testing is over.
+- **Blocking is on** (see above): only authorized addresses can use the keys.
 - **If a key leaks:** delete it in Brevo, generate a new one, update the
   `.env` that used it, and restart (`deploy.sh` or `pm2 restart`).
 
@@ -47,5 +47,5 @@ changed.
 
 - [x] `peyyala-prod` created and saved (no expiry)
 - [x] `peyyala-local-test` created and saved (no expiry)
-- [x] Authorized IPs: blocking off, nothing to add
+- [x] Authorized IPs: blocking on; laptop and server authorized (D4)
 - [ ] After D4: delete `peyyala-local-test` (optional)

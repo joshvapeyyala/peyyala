@@ -58,7 +58,7 @@ check Cloudflare > Manage account > Billing has a method that will work.
 ## Status
 
 - [x] DNSSEC enabled in Cloudflare
-- [ ] DNSSEC active at the registry (DS published)
+- [x] DNSSEC active at the registry (DS published, checked later on 2026-10-25)
 - [x] CAA: Let's Encrypt and Sectigo
 - [x] Decided (2026-10-25): keep Cloudflare's extra CAA entries (Universal SSL stays on, so the orange cloud remains an option)
 - [x] Transfer lock on; auto-renew on, expires 2031-10-24

@@ -83,5 +83,5 @@ Locally, none of this is needed day to day: `console` prints the email.
 
 - [x] Driver written, Resend removed
 - [x] Domain authenticated ([phase-d-01](phase-d-01-brevo-domain.md)) and sender `notifications@peyyala.com` verified ([phase-d-02](phase-d-02-brevo-sender.md))
-- [ ] Real test email sent from the laptop
+- [x] Real test email sent from the laptop: inbox, SPF/DKIM/DMARC PASS ([phase-d-04](phase-d-04-test-email.md))
 - [ ] Production key in the server's `.env`, test email from the live site
