@@ -128,4 +128,4 @@ bundle includes the new ones. When that happens, rerun the download.
 - [x] Certificate file on the server (Phase C, [phase-c-03](phase-c-03-database-tools.md))
 - [x] `psql` check against RDS with `verify-full` (Phase C): TLS verified, a
       wrong certificate is refused
-- [ ] Production `DATABASE_URL` set, `ssl = t` confirmed (Phase E)
+- [x] Production `DATABASE_URL` set, `ssl = t` (TLS 1.3) confirmed on the live site ([phase-e-04](phase-e-04-live-checks.md))

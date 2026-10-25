@@ -127,11 +127,10 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 - [x] E2 `main` updated to `dev` (`f613776`) after lint, type-check and a secret scan
 - [x] E3 First deploy: migrated, starting content loaded, built in ~1.5 min, live and healthy ([phase-e-03](phase-e-03-first-deploy.md))
 - [x] `https://peyyala.com/api/health` shows the latest commit on `main` (`f613776`) ([04](04-health-check.md))
-- [ ] Database connection encrypted: `ssl = t` ([03](03-database-ssl.md))
+- [x] E4 Live checks: pages, HTTPS, security headers, images, previews; database connection `ssl = t`; no errors; backup has the data ([phase-e-04](phase-e-04-live-checks.md))
 - [ ] Google sign-in works; an admin save shows on the site immediately
 - [ ] Upload the real screenshots and resume in the live admin ([02](02-s3-storage.md))
 - [ ] Contact form message arrives by email; Reply goes to the visitor ([01](01-brevo-email.md))
-- [ ] Security headers present (e.g. `curl -I https://peyyala.com`)
 - [ ] Reboot the server once; the site comes back by itself ([07](07-pm2-config.md))
 - [ ] Remove "(launching soon)" from the root `README.md`
 

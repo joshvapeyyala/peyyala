@@ -90,4 +90,5 @@ Restoring into the live database: see "Restoring a database copy" in
 - [x] AWS CLI, `shared-backup` key (root only), healthchecks.io ping URL
 - [x] Backup program and nightly timer
 - [x] First backup uploaded; key can't list, read or delete
+- [x] Backup with live data: `peyyala/2026-10-25_2349.dump` (32 KB) ([phase-e-04](phase-e-04-live-checks.md))
 - [ ] First automatic run (02:30) and healthchecks.io shows it
