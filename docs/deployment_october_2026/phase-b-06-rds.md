@@ -125,7 +125,7 @@ Then, the real test (I run it): the server can reach the database on port
 
 ## Status
 
-- [ ] Master password saved somewhere safe (`shared_admin`)
+- [x] Master password saved somewhere safe (`shared_admin`)
 - [x] `shared-db-1` created (2026-10-25), backups 1 day (Free plan)
 - [ ] Settings checked in the console (public access No, `shared-db-sg` only, encrypted, deletion protection)
 - [x] Endpoint: `shared-db-1.c1kuqgqk49fk.ap-south-1.rds.amazonaws.com`

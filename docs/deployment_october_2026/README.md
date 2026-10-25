@@ -92,7 +92,7 @@ Never committed, never on the laptop.
 - [x] EC2 `shared-web-1`: Ubuntu 26.04 LTS, `t3.small` (Free plan), 30 GB gp3 encrypted, Standard CPU credits, IMDSv2 required ([phase-b-04](phase-b-04-ec2.md))
 - [x] Elastic IP `52.66.16.188` attached to `shared-web-1`, SSH login works ([phase-b-05](phase-b-05-elastic-ip.md))
 - [x] RDS `shared-db-1`: PostgreSQL 17, db.t4g.micro, 20 GB gp3, zone ap-south-1b, private, encrypted, backups 1 day (7 after the plan upgrade), deletion protection. Reachable from the server only, TLS verified. Leave `rds.force_ssl` on ([phase-b-06](phase-b-06-rds.md), [03](03-database-ssl.md))
-- [ ] S3 `joshua-portfolio-prod` + IAM user `joshua-portfolio-prod-app` + its key. Same steps as dev, in [02](02-s3-storage.md)
+- [x] S3 `joshua-portfolio-prod` + IAM user `joshua-portfolio-prod-app` + its key ([phase-b-07](phase-b-07-prod-bucket.md)); public-read test in Phase E
 - [ ] S3 `shared-db-backups` (private, 30-day delete rule) + IAM user `shared-backup`
 
 ### Phase C: server setup (one script, from me)
