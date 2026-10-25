@@ -98,8 +98,8 @@ Never committed, never on the laptop.
 ### Phase C: server setup (step by step, scripts in `scripts/server/`)
 - [x] C1 System basics: updates, automatic security updates, IST, 4 GB swap, fail2ban ([phase-c-01](phase-c-01-system-basics.md))
 - [x] C2 Site tools: Node 22, pnpm, PM2 ([phase-c-02](phase-c-02-site-tools.md))
-- [ ] C3 Database tools: PostgreSQL 17 client, RDS certificate
-- [ ] C4 Caddy + DNS records in Cloudflare
+- [x] C3 Database tools: PostgreSQL 17 client, RDS certificate ([phase-c-03](phase-c-03-database-tools.md))
+- [x] C4 Caddy + DNS records in Cloudflare: HTTPS live, "back soon" page until deploy ([phase-c-04](phase-c-04-caddy.md))
 - [ ] C5 Project home: user `peyyala`, folders, PM2 at boot, `deploy.sh`
 - [ ] C6 Database `peyyala_prod` + login, `.env` started (you type the RDS master password)
 - [ ] C7 Nightly backups to S3 (you type the backup key)
@@ -114,7 +114,7 @@ backups, the Caddy site, PM2 log rotation and start-at-boot
 
 ### Phase D: domain, email, sign-in
 - [x] peyyala.com bought at Cloudflare
-- [ ] Cloudflare DNS (grey cloud): `peyyala.com` A → Elastic IP, `www` CNAME → `peyyala.com`
+- [x] Cloudflare DNS (grey cloud): `peyyala.com` A → `52.66.16.188`, `www` CNAME → `peyyala.com` (done in C4)
 - [ ] Brevo: authenticate peyyala.com, add sender `notifications@peyyala.com`, create keys `peyyala-local-test` and `peyyala-prod` ([01](01-brevo-email.md))
 - [ ] Google OAuth client: add origin `https://peyyala.com` and redirect URI `https://peyyala.com/api/auth/callback/google`
 

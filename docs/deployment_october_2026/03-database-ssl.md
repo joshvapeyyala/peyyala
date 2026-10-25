@@ -125,6 +125,7 @@ bundle includes the new ones. When that happens, rerun the download.
 - [x] SSL settings checked against the local database (refuses without encryption)
 - [x] Pre-build check shows the real reason it can't connect
 - [x] `.env.example` shows the production address
-- [ ] Certificate file on the server (Phase C)
-- [ ] `psql` check against RDS with `verify-full` (Phase C)
+- [x] Certificate file on the server (Phase C, [phase-c-03](phase-c-03-database-tools.md))
+- [x] `psql` check against RDS with `verify-full` (Phase C): TLS verified, a
+      wrong certificate is refused
 - [ ] Production `DATABASE_URL` set, `ssl = t` confirmed (Phase E)
